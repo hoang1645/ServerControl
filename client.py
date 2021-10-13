@@ -92,8 +92,8 @@ class Client(object):
             self.command_CaptureScreen()
         elif func == "Keylog":
             self.command_Keylog()
-        elif func == "Edit registries":
-            self.command_RegEdit()
+        elif func == "Show directory tree and copy/delete files":
+            self.command_DirTree()
 
     
     def command_Shutdown(self):
@@ -132,7 +132,7 @@ class Client(object):
         ins = appGUI.App(self.root,self.IP,self.port_no)
         processThread=threading.Thread(target=ins.loadApp())
         processThread.start()
-    def command_RegEdit(self):
+    def command_DirTree(self):
         regEdit = RegistryWindow(Toplevel(),self.IP,self.port_no)
         regeditThread = threading.Thread(target=regEdit.loadReg(res='750x500'))
         regeditThread.start()
