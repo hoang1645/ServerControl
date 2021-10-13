@@ -4,7 +4,7 @@ from tkinter import ttk
 import socket
 import commander
 import threading
-from registerGUI import *
+
 import keylogGUI
 import processGUI
 import appGUI
