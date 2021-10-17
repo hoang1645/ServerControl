@@ -4,16 +4,7 @@ import sys
 from tkinter import ttk
 from tkinter import *
 import socket
-
-
-def list_files(startpath, output=sys.stdout):
-    for root, dirs, files in os.walk(startpath):
-        level = root.replace(startpath, '').count(os.sep)
-        indent = ' ' * 4 * (level)
-        print('{}{}/'.format(indent, os.path.basename(root)), file=output)
-        subindent = ' ' * 4 * (level + 1)
-        for f in files:
-            print('{}{}'.format(subindent, f), file=output)
+import json
 
 class FileTree():
     def __init__(self, root:str, parent):
@@ -44,7 +35,9 @@ class FileTree():
         for child in self.mainframe.winfo_children(): 
             child.grid_configure(padx=5, pady=5)
 
+
     #THIS IS NOT TO BE USED IN THE CLIENT. THIS IS ONLY A TESTING METHOD.
+    #This is to be used in the server.
     def list_files(self, output=sys.stdout):
         for root, dirs, files in os.walk(self.root):
             level = root.replace(self.root, '').count(os.sep)
@@ -54,15 +47,19 @@ class FileTree():
             for f in files:
                 print('{}{}'.format(subindent, f), file=output)
 
-    def bind2Tree(self, filepath):
-        with open(filepath, "r", encoding="utf8") as file:
-            paths = file.readlines()
+    def bind2Tree(self, data:str):
+        data = json.loads(data)
+        assert type(data) == dict
+        partitions = list(data.keys())
+        for p in partitions:
+            self.fileTree.insert("", "end", p, text=p)
             levels = []
+            paths = data[p]
             for path in paths:
                 if path[-1] == "\n":
                     path = path[:-1]
-                #if path == "/":
-                #    continue
+                if path == "/":
+                    continue
                 level = path.count("\t")
                 while path[0] == "\t":
                     path = path[1:]
@@ -71,27 +68,24 @@ class FileTree():
                 if len(levels) == 0:
                     if path[-1] == "/":
                         levels.append({"dir": path, "level": level})
-                    self.fileTree.insert("", "end", path, text=path)
+                    self.fileTree.insert(p, "end", path, text=path)
                 elif level == 0:
                     while len(levels) > 0:
                         levels.pop()
                     levels.append({"dir": path, "level": level})
-                    self.fileTree.insert("", "end", path, text=path)
+                    self.fileTree.insert(p, "end", path, text=path)
                 elif level <= levels[-1]["level"]:
                     while level <= levels[-1]["level"]:
                         levels.pop()
                     self.fileTree.insert(levels[-1]["dir"], "end", levels[-1]["dir"] + path,\
-                         text=path)
+                            text=path)
                     if path[-1] == "/":
                         levels.append({"dir": levels[-1]["dir"] + path, "level": level})
                 else:
                     self.fileTree.insert(levels[-1]["dir"], "end", levels[-1]["dir"] + path,\
-                         text=path)
+                            text=path)
                     if path[-1] == "/":
                         levels.append({"dir": levels[-1]["dir"] + path, "level": level})
-                    
-                        
-
                     
                         
 
@@ -102,11 +96,12 @@ class FileTree():
             data += conn.recv(1024).decode(encoding="utf8")
             if not data:
                 break
+        return data
 
-ft = FileTree("E:\\", None)
-filepath =  "E:\list.txt"
-with open(filepath, "w", encoding="utf8") as ofile:
-    ft.list_files(ofile)
+# ft = FileTree("E:\\", None)
+# filepath =  "E:\\list.txt"
+# with open(filepath, "w", encoding="utf8") as ofile:
+#     ft.list_files(ofile)
 
-ft.bind2Tree(filepath)
-ft.ui.mainloop()
+# ft.bind2Tree(filepath)
+# ft.ui.mainloop()
