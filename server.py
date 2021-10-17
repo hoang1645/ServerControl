@@ -4,7 +4,6 @@ import threading
 import socket
 import os
 import pyautogui
-import registry
 from winreg import *
 from time import sleep
 import subprocess

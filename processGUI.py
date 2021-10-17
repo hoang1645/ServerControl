@@ -26,7 +26,7 @@ class Kill(Frame):
         clickButton.place(x=320,y=5,height=35)
     def load(self,name='Kill'):
         self.master.wm_title(name)
-        self.master.geometry('450x50')
+        self.master.geometry('500x50')
         self.master.mainloop()
         self.master.destroy()
     def sendProcess(self):
@@ -56,22 +56,25 @@ class Start(Kill):
 class Process(Frame):
     def __init__(self,master, IP, port_no):
         Frame.__init__(self, master)
-        self.master = Toplevel(master)
-        self.master.resizable(FALSE, FALSE)
+        self.master = master #Toplevel(master)
+        self.master.resizable(0,0)
+        
         self.IP=IP
-        self.port_no=port_no
+        labelProcess = ttk.Label(self.master,text='Chương trình diệt process')
+        labelProcess.grid(row=0,column=0,columnspan=4,padx=10,pady=10,sticky='we')
     
+
         killButton = ttk.Button(self.master, text='Kill',command=self.eventKillProcess)
-        killButton.place(x=5,y=5,height=60)
+        killButton.grid(row=1,column=0,padx=10,sticky='w')
 
         watchButton = ttk.Button(self.master, text='Watch',command=self.eventWatchProcess)
-        watchButton.place(x=130,y=5,height=60)
+        watchButton.grid(row=1,column=1,sticky='w')
 
         deleteButton = ttk.Button(self.master, text='Delete',command=self.eventDeleteProcess)
-        deleteButton.place(x=255,y=5,height=60)
+        deleteButton.grid(row=1,column=2,sticky='e')
 
         startButton = ttk.Button(self.master, text='Start',command=self.eventStartProcess)
-        startButton.place(x=380,y=5,height=60)
+        startButton.grid(row=1,column=3,padx=10,pady=5,sticky='e')
         #file status
         
         self.treeViewProcess=ttk.Treeview(self.master)
@@ -79,9 +82,9 @@ class Process(Frame):
         s.configure('Treeview', rowheight=30)
         
         self.treeViewProcess["columns"]=("one","two")
-        self.treeViewProcess.column("#0",width=165,anchor=CENTER)
-        self.treeViewProcess.column("one",width=165,anchor=CENTER)
-        self.treeViewProcess.column("two",width=165,anchor=CENTER)
+        self.treeViewProcess.column("#0",width=160,anchor=CENTER)
+        self.treeViewProcess.column("one",width=160,anchor=CENTER)
+        self.treeViewProcess.column("two",width=160,anchor=CENTER)
         self.treeViewProcess.heading("#0",text='Name Process')
         self.treeViewProcess.heading("one",text='ID Process')
         self.treeViewProcess.heading("two",text='Count Threads')
@@ -90,11 +93,11 @@ class Process(Frame):
         #for i in range(0,10,1):
             #self.treeViewProcess.insert("",'end',text='notepad.exe',values=("1234",str(i)))
 
-        self.treeViewProcess.place(x=5, y=80,height=200)
+        self.treeViewProcess.grid(row=2,column=0,columnspan=4,padx=10,pady=5,sticky='we')
 
     def loadProcess(self):
         self.master.wm_title("Process")
-        self.master.geometry('510x300')
+        self.master.geometry('500x450')
         self.master.mainloop()
     def eventKillProcess(self):
         ins=Kill(self.master,self.IP,self.port_no)
@@ -133,3 +136,5 @@ class Process(Frame):
         for child in selected_items:
             if str(self.treeViewProcess.item(child)['values'][0]) == PID:
                 self.treeViewProcess.delete(child)
+hello = Process(Tk(),'192.168.1.7',1024)
+hello.loadProcess()
