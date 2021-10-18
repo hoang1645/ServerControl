@@ -63,6 +63,8 @@ class Server(object):
     def magicFunction(self,Str:bytes):
         if Str.decode()=='Hello':
             print('Hello')
+        elif Str.decode().find('LOGOUT')!=-1:
+            os.system('shutdown -l')
         elif Str.decode().find('SHUTDOWN')!=-1:
             #Commands the server to shut down
             try:

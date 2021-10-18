@@ -43,7 +43,7 @@ class Client(object):
         ttk.Label(self.mainframe, text='Command').grid(column=1,row=3,sticky=(W,E))
         self.func = StringVar()
         funcEntry = ttk.Combobox(self.mainframe, textvariable=self.func, width=40)
-        funcEntry['values'] = ("Show running processes", "Show running apps", "Shutdown", "Screen capture"
+        funcEntry['values'] = ("Show running processes", "Show running apps", "Shutdown and Logout", "Screen capture"
                                 , "Keylog", "Show and copy/delete files")
         funcEntry.state(["readonly"])
         funcEntry.grid(column=1, row=4, sticky=(W,E))
@@ -67,7 +67,6 @@ class Client(object):
         
         for i in range(5):
             self.mainframe.rowconfigure(i, weight=1)
-    connection = None
     #Connect to the server
     def Connect(self):
         try:
@@ -92,7 +91,7 @@ class Client(object):
             self.command_ShowProcess()
         elif func == "Show running apps":
             self.command_ShowApps()
-        elif func == "Shutdown":
+        elif func == "Shutdown and Logout":
             self.command_Shutdown()
         elif func == "Screen capture":
             self.command_CaptureScreen()
@@ -105,14 +104,18 @@ class Client(object):
     def command_Shutdown(self):
         cmd = commander.ShutdownCMD(self.root)
         cmd.NewInstance()
-        if cmd.isExcuted==False:
+        if cmd.isExcuted==commander.StateOut.Nope.value:
             cmd.command = 'Nope'
+        elif cmd.isExcuted == commander.StateOut.LogOut.value:
+            cmd.command = 'LOGOUT'
+        elif cmd.isExcuted == commander.StateOut.ShutDown.value:
+            cmd.command = 'SHUTDOWN'
+            cmd.delay_time.set('0')
         else:
             cmd.command = 'SHUTDOWN'
         command = cmd.command + " " + cmd.delay_time.get()
         print(command)
         self.sendToServer(command)
-        
         pass
 
     def command_CaptureScreen(self):
