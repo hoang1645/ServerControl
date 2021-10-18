@@ -10,7 +10,8 @@ from time import sleep
 import subprocess
 import json
 import keyboard #pip install keyboard
-
+import csv
+import codecs
 class Server(object):
     def main_form(self):
         """Creates the interface window"""
@@ -84,15 +85,15 @@ class Server(object):
         
         elif Str.decode() == 'SHWPRC':
             #Commands the server to send the file consisting of running processes
-            os.system("wmic process get Name, ProcessId, ThreadCount >list.txt")
-            send = open('list.txt', 'r')
-            while True:
-                data = send.readline()
-                print(data)
-                if not data:
-                    self.conn.send('STOPRIGHTNOW'.encode())
-                    break
-                self.conn.sendall(data.strip().encode())
+            os.system('wmic /output:list.txt process get Name, ProcessId, ThreadCount /format:csv')
+            csv_reader = csv.reader(codecs.open('list.txt','rU','utf-16'))
+            for row in csv_reader:
+                if len(row) == 0 or 'Name' in str(row):
+                    continue
+                data = "{},{},{}\n".format(row[1],row[2],row[3])
+                self.conn.sendall(data.encode())
+            self.conn.send('STOPRIGHTNOW'.encode())
+            
         elif Str.decode() == 'SHWPRCAPP':
             tmp = subprocess.check_output("powershell gps | where {$_.MainWindowTitle} | select Name,Id,@{Name='ThreadCount';Expression={$_.Threads.Count}}")
             arr = tmp.split()[6:]
@@ -141,11 +142,6 @@ class Server(object):
                 self.conn.sendall(data)
             else:
                 pass
-            
-
-
-
-            pass
 
     def list_files(self, partition):
         ret = []
