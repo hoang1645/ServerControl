@@ -21,7 +21,7 @@ class Client(object):
         self.mainframe.grid(column=0, row=0, sticky=(N,W,E,S))
         self.root.columnconfigure(0, weight=1)
         self.root.rowconfigure(0, weight=1)
-        self.root.resizable(FALSE, FALSE)
+        
 
         #IP addr. input space
         self.ip_addr = StringVar()
@@ -44,9 +44,9 @@ class Client(object):
         self.func = StringVar()
         funcEntry = ttk.Combobox(self.mainframe, textvariable=self.func, width=40)
         funcEntry['values'] = ("Show running processes", "Show running apps", "Shutdown", "Screen capture"
-                                , "Keylog", "Edit registries")
+                                , "Keylog", "Show and copy/delete files")
         funcEntry.state(["readonly"])
-        funcEntry.grid(column=1, row=4, sticky=(S))
+        funcEntry.grid(column=1, row=4, sticky=(W,E))
 
         #Confirmation button
         self.confButton = ttk.Button(self.mainframe, text='Go', command=self.act, state=DISABLED)
@@ -58,9 +58,15 @@ class Client(object):
         self.State = ttk.Label(subframe, text='Not connected')
         self.State.grid(column=1, row=1)
 
+
         for child in self.mainframe.winfo_children(): 
             child.grid_configure(padx=5, pady=5)
-        pass
+        
+        for i in range(4):
+            self.mainframe.columnconfigure(i, weight=1)
+        
+        for i in range(5):
+            self.mainframe.rowconfigure(i, weight=1)
     connection = None
     #Connect to the server
     def Connect(self):
@@ -133,9 +139,7 @@ class Client(object):
         processThread=threading.Thread(target=ins.loadApp())
         processThread.start()
     def command_DirTree(self):
-        regEdit = RegistryWindow(Toplevel(),self.IP,self.port_no)
-        regeditThread = threading.Thread(target=regEdit.loadReg(res='750x500'))
-        regeditThread.start()
+        pass
     
     def command_Keylog(self):
         keyloggerGUI = keylogGUI.KeyloggerWindow(self.root,self.IP,self.port_no)

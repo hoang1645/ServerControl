@@ -12,6 +12,7 @@ import json
 import keyboard #pip install keyboard
 import csv
 import codecs
+import sys
 class Server(object):
     def main_form(self):
         """Creates the interface window"""
@@ -59,7 +60,7 @@ class Server(object):
                 break
             self.magicFunction(data)
     #Ham nay nhan lenh tu client
-    def magicFunction(self,Str):
+    def magicFunction(self,Str:bytes):
         if Str.decode()=='Hello':
             print('Hello')
         elif Str.decode().find('SHUTDOWN')!=-1:
@@ -142,6 +143,32 @@ class Server(object):
                 self.conn.sendall(data)
             else:
                 pass
+        
+        elif Str.decode().find('GIVE') == 0:
+            arg = Str.decode().split()[1]
+            with open(arg, 'rb') as ifile:
+                while True:
+                    data = ifile.read(1024)
+                    if not data:
+                        break
+                    self.conn.sendall(data)
+        elif Str.decode().find('BANISH') == 0:
+            arg = Str.decode().split()[1]
+            try:
+                os.remove(arg)
+            except NotImplementedError:
+                pass
+            if platform.system() == "Windows":
+                possible_names = [chr(i) + ":\\" for i in range(ord("A"), ord("Z") + 1)]
+                partitions = {}
+                for name in possible_names:
+                    if os.path.isdir(name):
+                        partitions[name] = self.list_files(name)
+                data = json.dumps(partitions)
+                self.conn.sendall(data)
+            else:
+                pass
+
 
     def list_files(self, partition):
         ret = []
