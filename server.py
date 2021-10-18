@@ -96,10 +96,10 @@ class Server(object):
             
         elif Str.decode() == 'SHWPRCAPP':
             tmp = subprocess.check_output("powershell gps | where {$_.MainWindowTitle} | select Name,Id,@{Name='ThreadCount';Expression={$_.Threads.Count}}")
-            arr = tmp.split()[6:]
+            arr = tmp.decode('utf-8').split()[6:]
             print(arr)
-            for i in range(0,len(arr)//3,1):
-                plusStr=str(arr[3*i].decode()+' '+arr[3*i+1].decode()+' '+arr[3*i+2].decode()+' ')
+            for i in range(0,len(arr)//3):
+                plusStr=str(arr[3*i]+' '+arr[3*i+1]+' '+arr[3*i+2]+' ')
                 self.conn.send(plusStr.encode())
             self.conn.send('STOPRIGHTNOW'.encode())
         elif Str.decode().find('KILLAPP') != -1:
