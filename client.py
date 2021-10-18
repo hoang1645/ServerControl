@@ -44,7 +44,7 @@ class Client(object):
         self.func = StringVar()
         funcEntry = ttk.Combobox(self.mainframe, textvariable=self.func, width=40)
         funcEntry['values'] = ("Show running processes", "Show running apps", "Shutdown and Logout", "Screen capture"
-                                , "Keylog", "Show and copy/delete files")
+                                , "Keylog and lock keyboard", "Show and copy/delete files")
         funcEntry.state(["readonly"])
         funcEntry.grid(column=1, row=4, sticky=(W,E))
 
@@ -95,7 +95,7 @@ class Client(object):
             self.command_Shutdown()
         elif func == "Screen capture":
             self.command_CaptureScreen()
-        elif func == "Keylog":
+        elif func == "Keylog and lock keyboard":
             self.command_Keylog()
         elif func == "Show directory tree and copy/delete files":
             self.command_DirTree()
