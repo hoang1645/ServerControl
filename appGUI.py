@@ -107,7 +107,7 @@ class App(Frame):
 
     def loadApp(self):
         self.master.wm_title("App Manager")
-        self.master.geometry('510x300')
+        self.master.geometry('510x400')
         self.master.mainloop()
     def eventKillApp(self):
         ins=Kill(self.master,self.IP,self.port_no)

