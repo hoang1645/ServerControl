@@ -8,6 +8,8 @@ import keyboard
 from pyautogui import scroll
 from tkinter import messagebox
 
+from timerGUI import TimerWindow
+
 class KeyboardLock(Frame):
     def __init__(self,master,IP,port_no):
         Frame.__init__(self, master)
@@ -40,6 +42,9 @@ class KeyboardLock(Frame):
             self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.connection.connect((self.ip, self.port_no))
             self.connection.send(f'LOCKKEYBOARD {self.timeCount.get()}'.encode())
+            timerWindow = TimerWindow(int(self.timeCount.get()),self.master)
+            timerWindow.submit()
+            self.master.destroy()
         else:
             messagebox.showerror('Error','You input an invalid number')
 

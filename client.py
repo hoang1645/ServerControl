@@ -10,6 +10,8 @@ import processGUI
 import appGUI
 import loadimage
 from time import sleep
+
+from timerGUI import TimerWindow
 class Client(object):
     def __init__(self):
         """Creates the interface window"""
@@ -114,8 +116,10 @@ class Client(object):
         else:
             cmd.command = 'SHUTDOWN'
         command = cmd.command + " " + cmd.delay_time.get()
-        print(command)
         self.sendToServer(command)
+        if cmd.isExcuted == commander.StateOut.ShutDownWithTime:
+            timerWindow = TimerWindow(int(cmd.delay_time.get()),self.root)
+            timerWindow.submit()
         pass
 
     def command_CaptureScreen(self):
