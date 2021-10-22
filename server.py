@@ -183,7 +183,7 @@ class Server(object):
     def list_files(self, partition):
         ret = []
         for root, dirs, files in os.walk(partition):
-            level = root.replace(self.root, '').count(os.sep)
+            level = root.replace(partition, '').count(os.sep)
             indent = '\t' * (level)
             ret.append('{}{}/'.format(indent, os.path.basename(root)))
             subindent = '\t' * (level + 1)

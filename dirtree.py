@@ -54,18 +54,6 @@ class FileTree():
         for child in self.mainframe.winfo_children(): 
             child.grid_configure(padx=5, pady=5)
 
-
-    #THIS IS NOT TO BE USED IN THE CLIENT. THIS IS ONLY A TESTING METHOD.
-    #This is to be used in the server.
-    def __list_files(self, output=sys.stdout):
-        for root, dirs, files in os.walk(self.root):
-            level = root.replace(self.root, '').count(os.sep)
-            indent = '\t' * (level)
-            print('{}{}/'.format(indent, os.path.basename(root)), file=output)
-            subindent = '\t' * (level + 1)
-            for f in files:
-                print('{}{}'.format(subindent, f), file=output)
-
     def bind2Tree(self, data:str):
         data = json.loads(data)
         assert type(data) == dict
@@ -155,11 +143,8 @@ class FileTree():
         return data
 
     def startInstance(self):
-        print(1)
         data = self.sendSignal()
-        print(2)
         self.bind2Tree(data)
-        print(3)
         self.ui.mainloop()
         
 

