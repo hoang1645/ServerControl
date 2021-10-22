@@ -4,7 +4,7 @@ from tkinter import ttk
 import socket
 import commander
 import threading
-
+import dirtree
 import keylogGUI
 import processGUI
 import appGUI
@@ -146,7 +146,9 @@ class Client(object):
         processThread=threading.Thread(target=ins.loadApp())
         processThread.start()
     def command_DirTree(self):
-        pass
+        ft = dirtree.FileTree(self.root, ip=self.IP, port=self.port_no)
+        instanceThread = threading.Thread(target=ft.startInstance())
+        instanceThread.start()
     
     def command_Keylog(self):
         keyloggerGUI = keylogGUI.KeyloggerWindow(self.root,self.IP,self.port_no)

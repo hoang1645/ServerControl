@@ -8,9 +8,12 @@ import socket
 import json
 
 class FileTree():
-    def __init__(self, parent, conn:socket.socket):
+    def __init__(self, parent, ip='127.0.0.1', port=1025):
         self.parent = parent
-        self.conn = conn
+        assert ip
+        assert port
+        self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.conn.connect((ip, port))
         if parent:
             self.ui = Toplevel(parent)
         else:
@@ -54,7 +57,7 @@ class FileTree():
 
     #THIS IS NOT TO BE USED IN THE CLIENT. THIS IS ONLY A TESTING METHOD.
     #This is to be used in the server.
-    def list_files(self, output=sys.stdout):
+    def __list_files(self, output=sys.stdout):
         for root, dirs, files in os.walk(self.root):
             level = root.replace(self.root, '').count(os.sep)
             indent = '\t' * (level)
@@ -118,7 +121,7 @@ class FileTree():
         name = self.fileTree.item(self.item, 'text')
         serverPath = self.fileTree.item(self.item, 'values')[0]
         with open(os.path.join(dir, name), "wb") as ofile:
-            self.conn.send("GIVE " + serverPath)
+            self.conn.send(("GIVE " + serverPath).encode())
             while True:
                 data = self.conn.recv(1024)
                 if not data:
@@ -129,7 +132,7 @@ class FileTree():
         messagebox.askyesno(message="Are you sure you want to delete this item?",\
             icon='question', title="Delete")
         serverPath = self.fileTree.item(self.item, 'values')[0]
-        self.conn.send("BANISH " + serverPath)
+        self.conn.send(("BANISH " + serverPath).encode())
         data = ""
         while True:
             dd = self.conn.recv(1024).decode(encoding="utf8")
@@ -142,7 +145,7 @@ class FileTree():
         self.bind2Tree(data)
 
     def sendSignal(self):
-        self.conn.send("DIRSHW")
+        self.conn.send("DIRSHW".encode())
         data = ""
         while True:
             dd = self.conn.recv(1024).decode(encoding="utf8")
@@ -152,11 +155,15 @@ class FileTree():
         return data
 
     def startInstance(self):
+        print(1)
         data = self.sendSignal()
+        print(2)
         self.bind2Tree(data)
+        print(3)
         self.ui.mainloop()
+        
 
-# ft = FileTree(None, None)
+#ft = FileTree(None, '10.19.0.8', 1025)
 # filepath =  "E:\\list.txt"
 # with open(filepath, "w", encoding="utf8") as ofile:
 #     ft.list_files(ofile)
