@@ -150,7 +150,7 @@ class Server(object):
                     if os.path.isdir(name):
                         partitions[name] = self.list_files(name)
                 data = json.dumps(partitions)
-                self.conn.sendall(data)
+                self.conn.sendall(data.encode())
             else:
                 pass
         
@@ -175,7 +175,7 @@ class Server(object):
                     if os.path.isdir(name):
                         partitions[name] = self.list_files(name)
                 data = json.dumps(partitions)
-                self.conn.sendall(data)
+                self.conn.sendall(data.encode())
             else:
                 pass
 

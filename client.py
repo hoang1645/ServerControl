@@ -134,30 +134,31 @@ class Client(object):
                 break
             scrshot.write(data)
         ins = loadimage.WindowScreenShot('capture.png',Toplevel(self.root))
-        scrThread =threading.Thread(target=ins.loadImg())
+        scrThread =threading.Thread(target=ins.loadImg)
         scrThread.start()
         scrshot.close()
     def command_ShowProcess(self):
         ins = processGUI.Process(self.root,self.IP,self.port_no)
-        processThread=threading.Thread(target=ins.loadProcess())
+        processThread=threading.Thread(target=ins.loadProcess)
         processThread.start()
     def command_ShowApps(self):
         ins = appGUI.App(self.root,self.IP,self.port_no)
-        processThread=threading.Thread(target=ins.loadApp())
+        processThread=threading.Thread(target=ins.loadApp)
         processThread.start()
     def command_DirTree(self):
         ft = dirtree.FileTree(self.root, self.IP, self.port_no)
-        instanceThread = threading.Thread(target=ft.startInstance())
+        instanceThread = threading.Thread(target=ft.startInstance, daemon=True)
         instanceThread.start()
+        ft.ui.mainloop()
     
     def command_Keylog(self):
         keyloggerGUI = keylogGUI.KeyloggerWindow(self.root,self.IP,self.port_no)
-        keylogThread = threading.Thread(target=keyloggerGUI.loadKeyLog())
+        keylogThread = threading.Thread(target=keyloggerGUI.loadKeyLog)
         keylogThread.start()
        
 
     #Ham gui toi server
-    def sendToServer(self,Str):
+    def sendToServer(self,Str:str):
         self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connection.connect((self.IP, self.port_no))
         self.connection.send(Str.encode())

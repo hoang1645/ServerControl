@@ -1,6 +1,7 @@
 from io import TextIOWrapper
 import os
 import sys
+import threading
 from tkinter import ttk
 from tkinter import *
 from tkinter import filedialog, messagebox
@@ -134,18 +135,17 @@ class FileTree():
 
     def sendSignal(self):
         self.conn.send("DIRSHW".encode())
-        data = ""
+        self.data = ""
         while True:
             dd = self.conn.recv(1024).decode(encoding="utf8")
             if not dd:
                 break
-            data += dd
-        return data
+            self.data += dd
 
     def startInstance(self):
-        data = self.sendSignal()
-        self.bind2Tree(data)
-        self.ui.mainloop()
+        self.sendSignal()
+        self.bind2Tree(self.data)
+        
         
 
 #ft = FileTree(None, '10.19.0.8', 1025)
