@@ -141,12 +141,34 @@ class FileTree():
             if not dd:
                 break
             self.data += dd
+    
+    def waitForLoad(self):
+        self.wait = Tk()
+        mframe = ttk.Frame(self.wait)
+        mframe.grid(column=0, row=0)
+        self.wait.geometry('300x200')
+        self.wait.resizable(FALSE,FALSE)
+        ttk.Label(mframe, text="Loading").grid(column=1, row=1)
+        self.wait.columnconfigure(0, weight=1)
+        self.wait.rowconfigure(0, weight=1)
+        self.wait.mainloop()
+
 
     def startInstance(self):
         self.sendSignal()
         self.bind2Tree(self.data)
         
-        
+    @staticmethod
+    def list_files(partition):
+        ret = []
+        for root, dirs, files in os.walk(partition):
+            level = root.replace(partition, '').count(os.sep)
+            indent = '\t' * (level)
+            ret.append('{}{}/'.format(indent, os.path.basename(root)))
+            subindent = '\t' * (level + 1)
+            for f in files:
+                ret.append('{}{}'.format(subindent, f))
+        return ret
 
 #ft = FileTree(None, '10.19.0.8', 1025)
 # filepath =  "E:\\list.txt"
@@ -156,3 +178,6 @@ class FileTree():
 # ft.bind2Tree(filepath)
 # ft.test()
 # ft.ui.mainloop()
+#paths = [FileTree.list_files(path) for path in ["C:\\", "D:\\", "E:\\", "F:\\"]]
+#print(paths)
+#print(FileTree.list_files("C:\\"))

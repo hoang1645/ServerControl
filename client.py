@@ -13,6 +13,23 @@ from time import sleep
 
 from timerGUI import TimerWindow
 class Client(object):
+    class waitForLoad(threading.Thread):
+        def __init__(self,instanceThread:threading.Thread, waitThread:threading.Thread, ft:dirtree.FileTree):
+            super().__init__(daemon=True)
+            self.ins = instanceThread
+            self.wait = waitThread
+            self.ft = ft
+
+        def run(self) -> None:
+            if self.ins.is_alive():
+                self.wait.start()
+            while True:
+                sleep(1)
+                if not self.ins.is_alive():
+                    self.ft.wait.destroy()
+                    break
+
+
     def __init__(self):
         """Creates the interface window"""
         self.root = Tk()
@@ -149,7 +166,14 @@ class Client(object):
         ft = dirtree.FileTree(self.root, self.IP, self.port_no)
         instanceThread = threading.Thread(target=ft.startInstance, daemon=True)
         instanceThread.start()
+        waitThread = threading.Thread(target=ft.waitForLoad, daemon=True)
+        
+        self.waitForLoad(instanceThread, waitThread, ft).start()
         ft.ui.mainloop()
+        
+    
+    
+            
     
     def command_Keylog(self):
         keyloggerGUI = keylogGUI.KeyloggerWindow(self.root,self.IP,self.port_no)
