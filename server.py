@@ -167,16 +167,17 @@ class Server(object):
                 else:
                     send.append([file, "dir"])
             data = json.dumps(send)
-            print(data)
             self.conn.sendall(data.encode())
         elif Str.decode(encoding='utf8').find('GIVE') == 0:
             arg = Str.decode(encoding='utf8').replace("GIVE ", "")
+            print(arg)
             with open(arg, 'rb') as ifile:
                 while True:
-                    data = ifile.read(1024)
+                    data=ifile.read(1024)
                     if not data:
                         break
-                    self.conn.sendall(data)
+                    self.conn.send(data)
+            print("Complete")
         elif Str.decode(encoding='utf8').find('BANISH') == 0:
             arg = Str.decode(encoding='utf8').replace("BANISH ", "")
             try:
