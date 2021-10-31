@@ -168,11 +168,7 @@ class Client(object):
     def command_DirTree(self):
         ft = dirtree.FileTree(self.root, self.IP, self.port_no)
         instanceThread = threading.Thread(target=ft.startInstance, daemon=True)
-        instanceThread.start()
-
-    
-    
-            
+        instanceThread.start()    
     
     def command_Keylog(self):
         keyloggerGUI = keylogGUI.KeyloggerWindow(self.root,self.IP,self.port_no)
