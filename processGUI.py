@@ -118,9 +118,13 @@ class Process(Frame):
         self.treeViewProcess.grid(row=2,column=0,columnspan=4,padx=10,pady=5,sticky='we')
     #Start Process GUI
     def loadProcess(self):
-        self.master.wm_title("Process")
-        self.master.geometry('500x450')
-        self.master.mainloop()
+        try:
+            self.master.wm_title("Process")
+            self.master.geometry('500x450')
+            self.master.mainloop()
+        except:
+            pass
+
     #Start kill window
     def eventKillProcess(self):
         ins=Kill(self.master,self.IP,self.port_no)

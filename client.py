@@ -8,7 +8,7 @@ import dirtree
 import keylogGUI
 import processGUI
 import appGUI
-import loadimage
+import showMACAddress
 from time import sleep
 
 from timerGUI import TimerWindow
@@ -62,8 +62,7 @@ class Client(object):
         ttk.Label(self.mainframe, text='Command').grid(column=1,row=3,sticky=(W,E))
         self.func = StringVar()
         funcEntry = ttk.Combobox(self.mainframe, textvariable=self.func, width=40)
-        funcEntry['values'] = ("Show running processes", "Show running apps", "Shutdown and Logout", "Screen capture"
-                                , "Keylog and lock keyboard", "Show and copy/delete files")
+        funcEntry['values'] = ("Show running processes", "Show running apps", "Shutdown and Logout", "Keylog and lock keyboard", "Show and copy/delete files","Show MAC Address")
         funcEntry.state(["readonly"])
         funcEntry.grid(column=1, row=4, sticky=(W,E))
 
@@ -112,13 +111,33 @@ class Client(object):
             self.command_ShowApps()
         elif func == "Shutdown and Logout":
             self.command_Shutdown()
-        elif func == "Screen capture":
-            self.command_CaptureScreen()
         elif func == "Keylog and lock keyboard":
             self.command_Keylog()
         elif func == "Show and copy/delete files":
             self.command_DirTree()
-
+        elif func == "Show MAC Address":
+            self.command_MAC()
+    
+    def command_MAC(self):
+        self.sendToServer("GET_MAC")
+        answer = ""
+        while True:
+            data = self.connection.recv(1024)
+            if not data:
+                break
+            answer += data.decode('utf-8')
+            if answer.find("STOPRIGHTNOW") != -1:
+                break
+        arr = answer.replace("STOPRIGHTNOW","").strip().split('\r\n')
+        tupleArr = []
+        for i in arr:
+            if len(i) == 0:
+                tupleArr.append(('',''))
+            else:
+                tupleArr.append((i.split(':')[0],i.split(':')[1].strip()))
+        macGUI = showMACAddress.MACAddressWindow(self.root,tupleArr)
+        macThread=threading.Thread(target=macGUI.NewInstance)
+        macThread.start()
     
     def command_Shutdown(self):
         cmd = commander.ShutdownCMD(self.root)
@@ -138,22 +157,6 @@ class Client(object):
             timerWindow = TimerWindow(int(cmd.delay_time.get()),self.root)
             timerWindow.submit()
         pass
-
-    def command_CaptureScreen(self):
-        cmd = 'CAPSCR'
-        print(cmd)
-        self.sendToServer(cmd)
-        scrshot = open("capture.png", 'wb')
-        while True:
-            data = self.connection.recv(1024)
-            if len(data) < 1024:
-                scrshot.write(data)
-                break
-            scrshot.write(data)
-        ins = loadimage.WindowScreenShot('capture.png',Toplevel(self.root))
-        scrThread =threading.Thread(target=ins.loadImg)
-        scrThread.start()
-        scrshot.close()
     def command_ShowProcess(self):
         ins = processGUI.Process(self.root,self.IP,self.port_no)
         processThread=threading.Thread(target=ins.loadProcess)

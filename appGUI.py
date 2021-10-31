@@ -106,9 +106,12 @@ class App(Frame):
         self.treeViewProcess.grid(row=2,column=0,columnspan=4,padx=10,pady=5,sticky='we')
 
     def loadApp(self):
-        self.master.wm_title("App Manager")
-        self.master.geometry('510x400')
-        self.master.mainloop()
+        try:
+            self.master.wm_title("App Manager")
+            self.master.geometry('510x400')
+            self.master.mainloop()
+        except:
+            pass
     def eventKillApp(self):
         ins=Kill(self.master,self.IP,self.port_no)
         ins.load()
