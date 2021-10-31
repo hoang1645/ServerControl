@@ -64,6 +64,10 @@ class Server(object):
     def magicFunction(self,Str:bytes):
         if Str.decode()=='Hello':
             print('Hello')
+        elif Str.decode() == 'GET_MAC':
+            mac_out = subprocess.check_output(['getmac', '/v','/fo','list'])
+            self.conn.sendall(mac_out)
+            self.conn.send('STOPRIGHTNOW'.encode())
         elif Str.decode().find('LOCKKEYBOARD') != -1:
             tmp = Str.decode().split(' ')
             for i in range(180):
