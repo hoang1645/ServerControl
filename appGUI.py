@@ -131,10 +131,12 @@ class App(Frame):
             data = self.conn.recv(1024)
             if not data:
                 break
-            if data.decode().find('STOPRIGHTNOW')!=-1:
+            strRev+=data.decode()
+            if(strRev.find('STOPRIGHTNOW')!=-1):
                 break
-            strRev+=data.decode('utf8')
+        strRev=strRev.replace('STOPRIGHTNOW','')
         finalAppRunning = strRev.split()
+        print(finalAppRunning)
         for i in range(0,len(finalAppRunning)//3,1):
             self.treeViewProcess.insert("",'end',text=finalAppRunning[3*i],values=(finalAppRunning[3*i+1],finalAppRunning[3*i+2]))
     #Giu nguyen

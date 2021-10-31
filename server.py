@@ -14,6 +14,7 @@ import csv
 import codecs
 import sys
 import time
+import re
 class Server(object):
     def main_form(self):
         """Creates the interface window"""
@@ -112,9 +113,20 @@ class Server(object):
         elif Str.decode() == 'SHWPRCAPP':
             tmp = subprocess.check_output("powershell gps | where {$_.MainWindowTitle} | select Name,Id,@{Name='ThreadCount';Expression={$_.Threads.Count}}")
             arr = tmp.decode('utf-8').split()[6:]
-            print(arr)
-            for i in range(0,len(arr)//3):
-                plusStr=str(arr[3*i]+' '+arr[3*i+1]+' '+arr[3*i+2]+' ')
+            newArr = []
+            ind = 0
+            while ind < len(arr):
+                baseStr = ""
+                while re.search('[a-zA-Z]', arr[ind]):
+                    baseStr += arr[ind]
+                    ind+=1
+                if len(baseStr) != 0:
+                    newArr.append(baseStr)
+                newArr.append(arr[ind])
+                ind += 1
+            print(newArr)
+            for i in range(0,len(newArr)//3):
+                plusStr=str(newArr[3*i]+' '+newArr[3*i+1]+' '+newArr[3*i+2]+' ')
                 self.conn.send(plusStr.encode())
             self.conn.send('STOPRIGHTNOW'.encode())
         elif Str.decode().find('KILLAPP') != -1:
