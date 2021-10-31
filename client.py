@@ -10,8 +10,8 @@ import processGUI
 import appGUI
 import showMACAddress
 from time import sleep
-
 from timerGUI import TimerWindow
+
 class Client(object):
     class waitForLoad(threading.Thread):
         def __init__(self,instanceThread:threading.Thread, waitThread:threading.Thread, ft:dirtree.FileTree):

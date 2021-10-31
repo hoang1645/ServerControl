@@ -155,16 +155,16 @@ class Server(object):
                         partitions.append(name)
                 data = json.dumps(partitions)
                 print(data)
-                self.conn.sendall(data.encode(encoding='utf8'))
+                self.conn.sendall(data.encode('utf-8'))
             else:
                 pass
         elif Str.decode(encoding='utf8').find("GET") == 0:
-            arg = Str.decode().split()[1]
+            arg = Str.decode('utf-8').split()[1]
             list_files = os.listdir(arg)
             data = json.dumps(list_files)
-            self.conn.sendall(data.encode())
+            self.conn.sendall(data.encode('utf-8'))
         elif Str.decode(encoding='utf8').find('GIVE') == 0:
-            arg = Str.decode().split()[1]
+            arg = Str.decode('utf-8').split()[1]
             with open(arg, 'rb') as ifile:
                 while True:
                     data = ifile.read(1024)
@@ -172,7 +172,7 @@ class Server(object):
                         break
                     self.conn.sendall(data)
         elif Str.decode(encoding='utf8').find('BANISH') == 0:
-            arg = Str.decode().split()[1]
+            arg = Str.decode('utf-8').split()[1]
             try:
                 os.remove(arg)
             except NotImplementedError:

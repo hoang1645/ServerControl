@@ -153,17 +153,19 @@ class FileTree():
         self.fileTree.delete(self.item)
 
     def sendSignal(self):
-        self.conn.send("DIRSHW".encode())
-        self.data = self.conn.recv(1024).decode()
+        self.conn.send("DIRSHW".encode('utf-8'))
+        self.data = self.conn.recv(1024).decode('utf-8')
         print(self.data)
     
 
 
     def startInstance(self):
-        self.sendSignal()
-        self.bind2Tree()
-        self.ui.mainloop()
-        
+        try:
+            self.sendSignal()
+            self.bind2Tree()
+            self.ui.mainloop()
+        except:
+            pass
     @staticmethod
     def list_files(partition):
         ret = []
