@@ -152,6 +152,9 @@ class FileTree():
             self.conn.send(("GIVE " + serverPath).encode(encoding='utf8'))
             while True:
                 data = self.conn.recv(1024)
+                if len(data) < 1024:
+                    ofile.write(data)
+                    break
                 if not data:
                     break
                 ofile.write(data)

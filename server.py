@@ -174,6 +174,8 @@ class Server(object):
             with open(arg, 'rb') as ifile:
                 while True:
                     data = ifile.read(1024)
+                    if len(data) == 0:
+                        break
                     if not data:
                         break
                     self.conn.sendall(data)
