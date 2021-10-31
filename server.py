@@ -154,17 +154,23 @@ class Server(object):
                     if os.path.isdir(name):
                         partitions.append(name)
                 data = json.dumps(partitions)
-                print(data)
-                self.conn.sendall(data.encode('utf-8'))
+                self.conn.sendall(data.encode(encoding='utf8'))
             else:
                 pass
         elif Str.decode(encoding='utf8').find("GET") == 0:
-            arg = Str.decode('utf-8').split()[1]
+            arg = Str.decode(encoding='utf8').replace("GET ", "")
             list_files = os.listdir(arg)
-            data = json.dumps(list_files)
-            self.conn.sendall(data.encode('utf-8'))
+            send = []
+            for file in list_files:
+                if os.path.isfile(os.path.join(arg, file)):
+                    send.append([file, "file"])
+                else:
+                    send.append([file, "dir"])
+            data = json.dumps(send)
+            print(data)
+            self.conn.sendall(data.encode())
         elif Str.decode(encoding='utf8').find('GIVE') == 0:
-            arg = Str.decode('utf-8').split()[1]
+            arg = Str.decode(encoding='utf8').replace("GIVE ", "")
             with open(arg, 'rb') as ifile:
                 while True:
                     data = ifile.read(1024)
@@ -172,7 +178,7 @@ class Server(object):
                         break
                     self.conn.sendall(data)
         elif Str.decode(encoding='utf8').find('BANISH') == 0:
-            arg = Str.decode('utf-8').split()[1]
+            arg = Str.decode(encoding='utf8').replace("BANISH ", "")
             try:
                 os.remove(arg)
             except NotImplementedError:
