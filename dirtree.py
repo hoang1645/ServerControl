@@ -105,7 +105,10 @@ class FileTree():
     def onSingle(self, event):
         self.item = self.fileTree.focus()
         if (self.item):
-            self.copyButton['state'] = NORMAL
+            if self.fileTree.item(self.item, 'values')[1] == "file":
+                self.copyButton['state'] = NORMAL
+            else:
+                self.copyButton['state'] = DISABLED
             self.deleteButton['state'] = NORMAL
     def onDBLClick(self, event):
         self.item = self.fileTree.focus()
@@ -154,6 +157,7 @@ class FileTree():
                 ofile.write(data)
 
     def Delete(self):
+        self.item = self.fileTree.focus()
         a = messagebox.askyesno(message="Are you sure you want to delete this item?",\
             icon='question', title="Delete")
         if not a:
@@ -162,7 +166,13 @@ class FileTree():
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.conn.connect((self.ip, self.port))
         self.conn.send(("BANISH " + serverPath).encode(encoding='utf8'))
-        self.fileTree.delete(self.item)
+        response = self.conn.recv(1024).decode()
+        if response == 'OK':
+            self.fileTree.delete(self.item)
+        else:
+            messagebox.showerror(message=response)
+            if response=='File already deleted':
+                self.fileTree.delete(self.item)
 
     def sendSignal(self):
         self.conn.send("DIRSHW".encode())

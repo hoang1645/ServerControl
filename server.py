@@ -180,9 +180,18 @@ class Server(object):
         elif Str.decode(encoding='utf8').find('BANISH') == 0:
             arg = Str.decode(encoding='utf8').replace("BANISH ", "")
             try:
-                os.remove(arg)
+                if os.path.isfile(arg):
+                    os.remove(arg)
+                else:
+                    os.rmdir(arg)
+                self.conn.send("OK".encode())
             except NotImplementedError:
+                self.conn.send("Already deleted".encode())
                 pass
+            except FileNotFoundError:
+                self.conn.send("Item does not exist".encode())
+            except PermissionError:
+                self.conn.send("Access denied".encode())
             
 
 
