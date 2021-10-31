@@ -37,7 +37,7 @@ class FileTree():
         self.mainframe.rowconfigure(1, weight=1)
 
         self.fileTree.bind("<Double-1>", self.onDBLClick)
-        
+        self.fileTree.bind("<1>", self.onSingle)
 
         self.buttonFrame = ttk.Frame(self.ui, padding='10 10 25 25')
         self.buttonFrame.grid(column=0, row=1, sticky=(N, W, E, S))
@@ -56,55 +56,69 @@ class FileTree():
             child.grid_configure(padx=5, pady=5)
 
     def bind2Tree(self, data:str):
-        data = json.loads(data)
-        assert type(data) == dict
-        partitions = list(data.keys())
+        partitions = json.loads(data)
+        assert type(partitions) == list
         for p in partitions:
             self.fileTree.insert("", "end", p, text=p)
-            levels = []
-            paths = data[p]
-            for path in paths:
-                if path[-1] == "\n":
-                    path = path[:-1]
-                if path == "/":
-                    continue
-                level = path.count("\t")
-                while path[0] == "\t":
-                    path = path[1:]
-                #if path[-1] != "/":
-                #    level -= 1
-                if len(levels) == 0:
-                    if path[-1] == "/":
-                        levels.append({"dir": path, "level": level})
-                    self.fileTree.insert(p, "end", path, text=path, values=(path, ))
-                elif level == 0:
-                    while len(levels) > 0:
-                        levels.pop()
-                    levels.append({"dir": path, "level": level})
-                    self.fileTree.insert(p, "end", path, text=path, values=(path, ))
-                elif level <= levels[-1]["level"]:
-                    while level <= levels[-1]["level"]:
-                        levels.pop()
-                    self.fileTree.insert(levels[-1]["dir"], "end", levels[-1]["dir"] + path,\
-                            text=path, values=(levels[-1]["dir"] + path, ))
-                    if path[-1] == "/":
-                        levels.append({"dir": levels[-1]["dir"] + path, "level": level})
-                else:
-                    self.fileTree.insert(levels[-1]["dir"], "end", levels[-1]["dir"] + path,\
-                            text=path, values=(levels[-1]["dir"] + path, ))
-                    if path[-1] == "/":
-                        levels.append({"dir": levels[-1]["dir"] + path, "level": level})
+            # levels = []
+            # paths = data[p]
+            # for path in paths:
+            #     if path[-1] == "\n":
+            #         path = path[:-1]
+            #     if path == "/":
+            #         continue
+            #     level = path.count("\t")
+            #     while path[0] == "\t":
+            #         path = path[1:]
+            #     #if path[-1] != "/":
+            #     #    level -= 1
+            #     if len(levels) == 0:
+            #         if path[-1] == "/":
+            #             levels.append({"dir": path, "level": level})
+            #         self.fileTree.insert(p, "end", path, text=path, values=(path, ))
+            #     elif level == 0:
+            #         while len(levels) > 0:
+            #             levels.pop()
+            #         levels.append({"dir": path, "level": level})
+            #         self.fileTree.insert(p, "end", path, text=path, values=(path, ))
+            #     elif level <= levels[-1]["level"]:
+            #         while level <= levels[-1]["level"]:
+            #             levels.pop()
+            #         self.fileTree.insert(levels[-1]["dir"], "end", levels[-1]["dir"] + path,\
+            #                 text=path, values=(levels[-1]["dir"] + path, ))
+            #         if path[-1] == "/":
+            #             levels.append({"dir": levels[-1]["dir"] + path, "level": level})
+            #     else:
+            #         self.fileTree.insert(levels[-1]["dir"], "end", levels[-1]["dir"] + path,\
+            #                 text=path, values=(levels[-1]["dir"] + path, ))
+            #         if path[-1] == "/":
+            #             levels.append({"dir": levels[-1]["dir"] + path, "level": level})
 
     def test(self):
         self.fileTree.insert("", "end", "123", text="1234", values=(123, ))
         self.fileTree.insert("", "end", "1234", text="123", values=(1234, ))
 
 
-    def onDBLClick(self, event):
+    def onSingle(self, event):
         self.item = self.fileTree.focus()
         if (self.item):
             self.copyButton['state'] = NORMAL
             self.deleteButton['state'] = NORMAL
+    def onDBLClick(self, event):
+        self.item = self.fileTree.focus()
+        serverPath = self.fileTree.item(self.item, 'values')[0]
+        self.conn.send(("GET " + serverPath).encode())
+        data = b""
+        while True:
+            d = self.conn.recv(1024)
+            if not d:
+                break
+            data += d
+        List = json.loads(data)
+        for item in List:
+            fullPath = os.path.join(serverPath, item)
+            self.fileTree.insert(serverPath, "end", fullPath, text=item, values=(fullPath, ))
+        pass
     def Copy(self):
         dir = filedialog.askdirectory()
         name = self.fileTree.item(self.item, 'text')

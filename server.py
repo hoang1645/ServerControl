@@ -145,15 +145,19 @@ class Server(object):
         elif Str.decode() == 'DIRSHW':
             if platform.system() == "Windows":
                 possible_names = [chr(i) + ":\\" for i in range(ord("A"), ord("Z") + 1)]
-                partitions = {}
+                partitions = []
                 for name in possible_names:
                     if os.path.isdir(name):
-                        partitions[name] = self.list_files(name)
+                        partitions.append(name)
                 data = json.dumps(partitions)
                 self.conn.sendall(data.encode())
             else:
                 pass
-        
+        elif Str.decode().find("GET") == 0:
+            arg = Str.decode().split()[1]
+            list_files = os.listdir(arg)
+            data = json.dumps(list_files)
+            self.conn.sendall(data.encode())
         elif Str.decode().find('GIVE') == 0:
             arg = Str.decode().split()[1]
             with open(arg, 'rb') as ifile:
@@ -180,16 +184,16 @@ class Server(object):
                 pass
 
 
-    def list_files(self, partition):
-        ret = []
-        for root, dirs, files in os.walk(partition):
-            level = root.replace(partition, '').count(os.sep)
-            indent = '\t' * (level)
-            ret.append('{}{}/'.format(indent, os.path.basename(root)))
-            subindent = '\t' * (level + 1)
-            for f in files:
-                ret.append('{}{}'.format(subindent, f))
-        return ret
+    # def list_files(self, partition):
+    #     ret = []
+    #     for root, dirs, files in os.walk(partition):
+    #         level = root.replace(partition, '').count(os.sep)
+    #         indent = '\t' * (level)
+    #         ret.append('{}{}/'.format(indent, os.path.basename(root)))
+    #         subindent = '\t' * (level + 1)
+    #         for f in files:
+    #             ret.append('{}{}'.format(subindent, f))
+    #     return ret
 
                 
 
