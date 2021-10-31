@@ -9,6 +9,7 @@ import keylogGUI
 import processGUI
 import appGUI
 import showMACAddress
+import stream
 from time import sleep
 from timerGUI import TimerWindow
 
@@ -62,7 +63,7 @@ class Client(object):
         ttk.Label(self.mainframe, text='Command').grid(column=1,row=3,sticky=(W,E))
         self.func = StringVar()
         funcEntry = ttk.Combobox(self.mainframe, textvariable=self.func, width=40)
-        funcEntry['values'] = ("Show running processes", "Show running apps", "Shutdown and Logout", "Keylog and lock keyboard", "Show and copy/delete files","Show MAC Address")
+        funcEntry['values'] = ("Show running processes", "Show running apps", "Shutdown and Logout", "Keylog and lock keyboard", "Show and copy/delete files","Show MAC Address","Share Screen")
         funcEntry.state(["readonly"])
         funcEntry.grid(column=1, row=4, sticky=(W,E))
 
@@ -117,7 +118,14 @@ class Client(object):
             self.command_DirTree()
         elif func == "Show MAC Address":
             self.command_MAC()
+        elif func=="Share Screen":
+            self.get_screen_share()
     
+    def get_screen_share(self):
+        self.sendToServer("SHARE_SCREEN")
+        reciever=stream.StreamingReciever(conn=self.connection)
+        reciever_thread=threading.Thread(target=reciever.show_stream)
+        reciever_thread.start()
     def command_MAC(self):
         self.sendToServer("GET_MAC")
         answer = ""
