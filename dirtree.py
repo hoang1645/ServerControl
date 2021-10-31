@@ -13,6 +13,8 @@ class FileTree():
         self.parent = parent
         assert ip
         assert port
+        self.ip = ip
+        self.port = port
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.conn.connect((ip, port))
         if parent:
@@ -55,11 +57,12 @@ class FileTree():
         for child in self.mainframe.winfo_children(): 
             child.grid_configure(padx=5, pady=5)
 
-    def bind2Tree(self, data:str):
-        partitions = json.loads(data)
+    def bind2Tree(self):
+        partitions = json.loads(self.data)
+        print(partitions)
         assert type(partitions) == list
         for p in partitions:
-            self.fileTree.insert("", "end", p, text=p)
+            self.fileTree.insert("", "end", p, text=p, values = (p, ))
             # levels = []
             # paths = data[p]
             # for path in paths:
@@ -106,25 +109,32 @@ class FileTree():
             self.deleteButton['state'] = NORMAL
     def onDBLClick(self, event):
         self.item = self.fileTree.focus()
-        serverPath = self.fileTree.item(self.item, 'values')[0]
-        self.conn.send(("GET " + serverPath).encode())
-        data = b""
-        while True:
-            d = self.conn.recv(1024)
-            if not d:
-                break
-            data += d
-        List = json.loads(data)
-        for item in List:
-            fullPath = os.path.join(serverPath, item)
-            self.fileTree.insert(serverPath, "end", fullPath, text=item, values=(fullPath, ))
-        pass
+        
+        if (self.item):
+            serverPath = self.fileTree.item(self.item, 'values')[0]
+            self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.conn.connect((self.ip, self.port))
+            self.conn.send(("GET " + serverPath).encode(encoding='utf8'))
+            print("Command sent")
+            data = b""
+            while True:
+                d = self.conn.recv(1024)
+                data += d
+                if (len(d)) < 1024:
+                    break
+            List = json.loads(data)
+            for item in List:
+                fullPath = os.path.join(serverPath, item)
+                self.fileTree.insert(serverPath, "end", fullPath, text=item, values=(fullPath, ))
+
     def Copy(self):
         dir = filedialog.askdirectory()
         name = self.fileTree.item(self.item, 'text')
         serverPath = self.fileTree.item(self.item, 'values')[0]
         with open(os.path.join(dir, name), "wb") as ofile:
-            self.conn.send(("GIVE " + serverPath).encode())
+            self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.conn.connect((self.ip, self.port))
+            self.conn.send(("GIVE " + serverPath).encode(encoding='utf8'))
             while True:
                 data = self.conn.recv(1024)
                 if not data:
@@ -132,45 +142,27 @@ class FileTree():
                 ofile.write(data)
 
     def Delete(self):
-        messagebox.askyesno(message="Are you sure you want to delete this item?",\
+        a = messagebox.askyesno(message="Are you sure you want to delete this item?",\
             icon='question', title="Delete")
+        if not a:
+            return
         serverPath = self.fileTree.item(self.item, 'values')[0]
-        self.conn.send(("BANISH " + serverPath).encode())
-        data = ""
-        while True:
-            dd = self.conn.recv(1024).decode(encoding="utf8")
-            if not dd:
-                break
-            data += dd
-        olds = self.fileTree.get_children()
-        for old in olds:
-            self.fileTree.delete(old)
-        self.bind2Tree(data)
+        self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.conn.connect((self.ip, self.port))
+        self.conn.send(("BANISH " + serverPath).encode(encoding='utf8'))
+        self.fileTree.delete(self.item)
 
     def sendSignal(self):
         self.conn.send("DIRSHW".encode())
-        self.data = ""
-        while True:
-            dd = self.conn.recv(1024).decode(encoding="utf8")
-            if not dd:
-                break
-            self.data += dd
+        self.data = self.conn.recv(1024).decode()
+        print(self.data)
     
-    def waitForLoad(self):
-        self.wait = Tk()
-        mframe = ttk.Frame(self.wait)
-        mframe.grid(column=0, row=0)
-        self.wait.geometry('300x200')
-        self.wait.resizable(FALSE,FALSE)
-        ttk.Label(mframe, text="Loading").grid(column=1, row=1)
-        self.wait.columnconfigure(0, weight=1)
-        self.wait.rowconfigure(0, weight=1)
-        self.wait.mainloop()
 
 
     def startInstance(self):
         self.sendSignal()
-        self.bind2Tree(self.data)
+        self.bind2Tree()
+        self.ui.mainloop()
         
     @staticmethod
     def list_files(partition):
@@ -184,14 +176,8 @@ class FileTree():
                 ret.append('{}{}'.format(subindent, f))
         return ret
 
-#ft = FileTree(None, '10.19.0.8', 1025)
+# ft = FileTree(None, '10.2.0.2', 1025)
 # filepath =  "E:\\list.txt"
 # with open(filepath, "w", encoding="utf8") as ofile:
 #     ft.list_files(ofile)
-
-# ft.bind2Tree(filepath)
-# ft.test()
-# ft.ui.mainloop()
-#paths = [FileTree.list_files(path) for path in ["C:\\", "D:\\", "E:\\", "F:\\"]]
-#print(paths)
-#print(FileTree.list_files("C:\\"))
+# ft.startInstance()

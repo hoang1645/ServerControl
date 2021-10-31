@@ -166,11 +166,7 @@ class Client(object):
         ft = dirtree.FileTree(self.root, self.IP, self.port_no)
         instanceThread = threading.Thread(target=ft.startInstance, daemon=True)
         instanceThread.start()
-        waitThread = threading.Thread(target=ft.waitForLoad, daemon=True)
-        
-        self.waitForLoad(instanceThread, waitThread, ft).start()
-        ft.ui.mainloop()
-        
+
     
     
             

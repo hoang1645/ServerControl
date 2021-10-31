@@ -150,15 +150,16 @@ class Server(object):
                     if os.path.isdir(name):
                         partitions.append(name)
                 data = json.dumps(partitions)
-                self.conn.sendall(data.encode())
+                print(data)
+                self.conn.sendall(data.encode(encoding='utf8'))
             else:
                 pass
-        elif Str.decode().find("GET") == 0:
+        elif Str.decode(encoding='utf8').find("GET") == 0:
             arg = Str.decode().split()[1]
             list_files = os.listdir(arg)
             data = json.dumps(list_files)
             self.conn.sendall(data.encode())
-        elif Str.decode().find('GIVE') == 0:
+        elif Str.decode(encoding='utf8').find('GIVE') == 0:
             arg = Str.decode().split()[1]
             with open(arg, 'rb') as ifile:
                 while True:
@@ -166,22 +167,13 @@ class Server(object):
                     if not data:
                         break
                     self.conn.sendall(data)
-        elif Str.decode().find('BANISH') == 0:
+        elif Str.decode(encoding='utf8').find('BANISH') == 0:
             arg = Str.decode().split()[1]
             try:
                 os.remove(arg)
             except NotImplementedError:
                 pass
-            if platform.system() == "Windows":
-                possible_names = [chr(i) + ":\\" for i in range(ord("A"), ord("Z") + 1)]
-                partitions = {}
-                for name in possible_names:
-                    if os.path.isdir(name):
-                        partitions[name] = self.list_files(name)
-                data = json.dumps(partitions)
-                self.conn.sendall(data.encode())
-            else:
-                pass
+            
 
 
     # def list_files(self, partition):
