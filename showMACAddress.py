@@ -29,5 +29,7 @@ class MACAddressWindow:
         for value in macTuple:
             self.tree.insert('', 'end', values=value)
     def NewInstance(self):
-        self.root.mainloop()
- 
+        try:
+            self.root.mainloop()
+        except:
+            pass

@@ -115,7 +115,10 @@ class App(Frame):
     def eventKillApp(self):
         ins=Kill(self.master,self.IP,self.port_no)
         ins.load()
-        self.deleteInTreeView(str(PID_Deleted))
+        try:
+            self.deleteInTreeView(str(PID_Deleted))
+        except:
+            pass
     def eventDeleteAppProcess(self):
         selected_items = self.treeViewProcess.get_children()
         for child in selected_items:

