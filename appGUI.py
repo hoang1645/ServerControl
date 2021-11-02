@@ -42,7 +42,6 @@ class Kill(Frame):
             if data.decode() == 'TRUE':
                 global PID_Deleted
                 PID_Deleted=self.pid.get()
-                self.master.quit()
             else:
                 messagebox.showerror("Error","Failed to kill an app!")
         except:
@@ -57,9 +56,7 @@ class Start(Kill):
             self.conn.connect((self.IP, self.port_no))
             self.conn.send(("START " + self.pid.get()).encode())
             data = self.conn.recv(8)
-            if data.decode() == 'TRUE':
-                self.master.quit()
-            else:
+            if data.decode() != 'TRUE':
                 messagebox.showerror("Error","Failed to start an app!")
         except:
             messagebox.showerror("Error","Not Found!")
