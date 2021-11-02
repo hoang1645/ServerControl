@@ -9,7 +9,7 @@ class MACAddressWindow:
     def __init__(self, root,macTuple):
         self.root = Toplevel(root)
         self.root.title('Show MAC Address')
-        self.root.geometry('650x300')
+        self.root.geometry('680x380')
 
         self.mainframe = ttk.Frame(self.root, padding='3 3 12 12')
         self.mainframe.grid(column=0, row=0, sticky=(N,W,E,S))
