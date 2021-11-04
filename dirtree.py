@@ -7,6 +7,7 @@ from tkinter import *
 from tkinter import filedialog, messagebox
 import socket
 import json
+from time import sleep
 
 class FileTree():
     def __init__(self, parent, ip='127.0.0.1', port=1025):
@@ -106,6 +107,7 @@ class FileTree():
         self.item = self.fileTree.focus()
         if (self.item):
             if self.fileTree.item(self.item, 'values')[1] == "file":
+                print("file")
                 self.copyButton['state'] = NORMAL
             else:
                 self.copyButton['state'] = DISABLED
@@ -143,23 +145,30 @@ class FileTree():
         else:
             return s
     def Copy(self):
-        dir = filedialog.askdirectory()
-        name = self.fileTree.item(self.item, 'text')
-        serverPath = self.fileTree.item(self.item, 'values')[0]
-        with open(os.path.join(dir, self.manipulateNameFromDirOrFile(name)), "wb") as ofile:
-            self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.conn.connect((self.ip, self.port))
-            self.conn.send(("GIVE " + serverPath).encode(encoding='utf8'))
-            while True:
-                data = self.conn.recv(1024)
-                print(len(data))
-                if len(data) < 1024:
-                    ofile.write(data)
-                    break
-                if not data:
-                    break
-                ofile.write(data)
+        self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.conn.connect((self.ip, self.port))
 
+        self.item = self.fileTree.focus()
+        dir = filedialog.askdirectory(); dir = dir[:-1] + "\\"; print(dir)
+        name = self.fileTree.item(self.item, 'text').replace("<file> ", "")
+        serverPath = self.fileTree.item(self.item, 'values')[0]
+        a = True
+        if os.path.isfile(dir+name):
+            a = messagebox.askyesno(message="Item already exists. Overwrite?",\
+            icon='question', title="Copy")
+        if a:
+            self.conn.send(("GIVE " + serverPath).encode(encoding='utf8'))
+            data = b""
+            sleep(1)
+            while True:
+                    d = self.conn.recv(1024)
+                    data += d
+                    if len(d) < 1024:
+                        
+                        break
+            with open(dir + name, "wb") as ofile:
+                ofile.write(data)
+            
     def Delete(self):
         self.item = self.fileTree.focus()
         a = messagebox.askyesno(message="Are you sure you want to delete this item?",\
