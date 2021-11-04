@@ -139,13 +139,15 @@ class Client(object):
             answer += data.decode('utf-8')
             if answer.find("STOPRIGHTNOW") != -1:
                 break
-        arr = answer.replace("STOPRIGHTNOW","").strip().split('\r\n')
+        arr = answer.replace("STOPRIGHTNOW","").strip().split('\n')
+        print(arr)
         tupleArr = []
         for i in arr:
             if len(i) == 0:
                 tupleArr.append(('',''))
             else:
                 tupleArr.append((i.split(':')[0],i.split(':')[1].strip()))
+        print(tupleArr)
         macGUI = showMACAddress.MACAddressWindow(self.root,tupleArr)
         macThread=threading.Thread(target=macGUI.NewInstance)
         macThread.start()
