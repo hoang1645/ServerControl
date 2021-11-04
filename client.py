@@ -12,6 +12,7 @@ import showMACAddress
 import stream
 from time import sleep
 from timerGUI import TimerWindow
+from ttkbootstrap import Style
 
 class Client(object):
     class waitForLoad(threading.Thread):
@@ -32,8 +33,9 @@ class Client(object):
 
 
     def __init__(self):
+        self.style = Style(theme='cosmo')
         """Creates the interface window"""
-        self.root = Tk()
+        self.root = self.style.master
         self.root.title("Client")
 
         #mainframe

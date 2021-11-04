@@ -22,7 +22,7 @@ class FileTree():
         else:
             self.ui = Tk()
         self.ui.title('Files')
-        self.ui.geometry("700x360")
+        # self.ui.geometry("700x360")
         self.mainframe = ttk.Frame(self.ui, padding='3 3 12 12')
         self.mainframe.grid(column=0, row=0, sticky=(N,W,E,S))
         self.ui.columnconfigure(0, weight=1)

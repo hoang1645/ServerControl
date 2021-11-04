@@ -34,7 +34,6 @@ class TimerWindow(Frame):
 
     def load(self):
         self.master.wm_title("Countdown Timer")
-        self.master.geometry("100x100")
         self.master.mainloop()
     
     def submit(self):

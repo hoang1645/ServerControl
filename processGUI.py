@@ -32,7 +32,6 @@ class Kill(Frame):
 
     def load(self,name='Kill'):
         self.master.wm_title(name)
-        self.master.geometry('500x50')
         self.master.mainloop()
 
     def sendProcess(self):
@@ -116,7 +115,6 @@ class Process(Frame):
     def loadProcess(self):
         try:
             self.master.wm_title("Process")
-            self.master.geometry('500x450')
             self.master.mainloop()
         except:
             pass

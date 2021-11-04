@@ -35,7 +35,7 @@ class ShutdownCMD:
                                     variable=self.delay, value=StateOut.LogOut.value)
 
         self.immediate_check.grid(column=1, row=1,sticky='w')
-        self.delayed_check.grid(column=2, row=1,sticky='w')
+        self.delayed_check.grid(column=2, row=1,sticky='w',padx=5)
 
         self.delay_time_entry = ttk.Entry(self.mainframe, width=10, textvariable=self.delay_time)
         self.delay_time_entry.grid(column=3, row=1)

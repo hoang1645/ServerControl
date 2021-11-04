@@ -30,7 +30,6 @@ class Kill(Frame):
 
     def load(self,name='Kill'):
         self.master.wm_title(name)
-        self.master.geometry('500x50')
         self.master.mainloop()
 
     def sendProcess(self):
@@ -105,7 +104,6 @@ class App(Frame):
     def loadApp(self):
         try:
             self.master.wm_title("App Manager")
-            self.master.geometry('510x400')
             self.master.mainloop()
         except:
             pass
