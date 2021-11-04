@@ -60,20 +60,20 @@ class KeyloggerWindow(Frame):
         self.ip=ip
         self.port_no=port_no
     
-        hookButton = ttk.Button(self.master, text='Hook',command=self.manageEventHook)
-        hookButton.grid(row=0,column=0,padx=10,pady=10,sticky='w')
+        hookButton = ttk.Button(self.master, text='Hook',command=self.manageEventHook,style="Accent.TButton")
+        hookButton.grid(row=0,column=0,padx=10,pady=5,sticky='news')
 
         unHookButton = ttk.Button(self.master, text='Unhook',command=self.eventUnhook)
-        unHookButton.grid(row=0,column=1,sticky='w')
+        unHookButton.grid(row=0,column=1,padx=10,pady=5,sticky='news')
         
         printButton = ttk.Button(self.master, text='Print',command=self.eventPrint)
-        printButton.grid(row=0,column=2,sticky='we')
+        printButton.grid(row=0,column=2,padx=10,pady=5,sticky='nwes')
 
         deleteButton = ttk.Button(self.master, text='Delete',command=self.eventDelete)
-        deleteButton.grid(row=0,column=3,sticky='e')
+        deleteButton.grid(row=0,column=3,padx=10,pady=5,sticky='news')
 
         lockButton = ttk.Button(self.master, text='Lock',command=self.eventLock)
-        lockButton.grid(row=0,column=4,padx=10,pady=10,sticky='e')
+        lockButton.grid(row=0,column=4,padx=10,pady=5,sticky='news')
 
 
         #file status

@@ -73,16 +73,16 @@ class App(Frame):
         self.master.columnconfigure(3, weight=1)
     
         killButton = ttk.Button(self.master, text='Kill',command=self.eventKillApp)
-        killButton.grid(row=1,column=0,padx=10,sticky='w')
+        killButton.grid(row=1,column=0,padx=10,pady=5,sticky='news')
 
-        watchButton = ttk.Button(self.master, text='Watch',command=self.eventWatchApp)
-        watchButton.grid(row=1,column=1,sticky='w')
+        watchButton = ttk.Button(self.master, text='Watch',command=self.eventWatchApp,style="Accent.TButton")
+        watchButton.grid(row=1,column=1,padx=10,pady=5,sticky='news')
 
         deleteButton = ttk.Button(self.master, text='Delete',command=self.eventDeleteAppProcess)
-        deleteButton.grid(row=1,column=2,sticky='e')
+        deleteButton.grid(row=1,column=2,padx=10,pady=5,sticky='news')
 
         startButton = ttk.Button(self.master, text='Start',command=self.eventStartApp)
-        startButton.grid(row=1,column=3,padx=10,pady=5,sticky='e')
+        startButton.grid(row=1,column=3,padx=10,pady=5,sticky='news')
         #file status
         
         self.treeViewProcess=ttk.Treeview(self.master)

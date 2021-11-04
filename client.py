@@ -33,10 +33,12 @@ class Client(object):
 
 
     def __init__(self):
-        self.style = Style(theme='cosmo')
         """Creates the interface window"""
-        self.root = self.style.master
-        self.root.title("Client")
+        self.root = Tk()
+        self.root.title("Client version")
+
+        self.root.tk.call("source","sun-valley.tcl")
+        self.root.tk.call("set_theme","light")
 
         #mainframe
         self.mainframe = ttk.Frame(self.root, padding="10 10 25 25")
@@ -58,7 +60,7 @@ class Client(object):
         port_entry.grid(column=2, row=2, sticky=(W,E))
         
         #Connect button
-        connectButton = ttk.Button(self.mainframe, text='Connect', command=self.Connect)
+        connectButton = ttk.Button(self.mainframe, text='Connect', command=self.Connect,style="Accent.TButton")
         connectButton.grid(column=3, row=2, sticky=(E))
 
         #Functions
