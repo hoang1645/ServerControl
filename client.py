@@ -12,7 +12,6 @@ import showMACAddress
 import stream
 from time import sleep
 from timerGUI import TimerWindow
-from ttkbootstrap import Style
 
 class Client(object):
     class waitForLoad(threading.Thread):
