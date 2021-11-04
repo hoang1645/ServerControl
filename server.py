@@ -65,7 +65,7 @@ class Server(object):
         if Str.decode()=='Hello':
             print('Hello')
         elif Str.decode() == 'GET_MAC':
-            mac_out = subprocess.check_output(['getmac', '/v','/fo','list'],encoding='utf-8')
+            mac_out = subprocess.check_output(['getmac', '/v','/fo','list'],encoding='cp932')
             self.conn.sendall(mac_out.encode('utf-8'))
             self.conn.send('STOPRIGHTNOW'.encode())
         elif Str.decode()=="SHARE_SCREEN":
