@@ -6,13 +6,11 @@ import os
 import pyautogui
 import platform
 from winreg import *
-from time import sleep
 import subprocess
 import json
 import keyboard #pip install keyboard
 import csv
 import codecs
-import sys
 import time
 import re
 import stream

@@ -3,10 +3,8 @@ import cv2
 import numpy as np
 from numpy.lib.ufunclike import fix
 import pyautogui
-import socket
 import pickle
 import struct
-import threading
 
 class StreamingSender():
     def __init__(self,conn=None,addr=None,x_reso=1024,y_reso=768):

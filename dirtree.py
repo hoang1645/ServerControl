@@ -1,7 +1,4 @@
-from io import TextIOWrapper
 import os
-import sys
-import threading
 from tkinter import ttk
 from tkinter import *
 from tkinter import filedialog, messagebox

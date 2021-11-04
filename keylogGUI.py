@@ -3,9 +3,6 @@ from tkinter import ttk
 import threading
 import socket
 # pip install pillow
-from PIL import Image, ImageTk
-import keyboard
-from pyautogui import scroll
 from tkinter import messagebox
 
 from timerGUI import TimerWindow

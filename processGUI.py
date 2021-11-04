@@ -1,13 +1,7 @@
 from tkinter import *
 from tkinter import ttk
-import threading
 import socket
-from time import sleep
-# pip install pillow
-from PIL import Image, ImageTk
-from pyautogui import scroll
 from tkinter import messagebox
-import re
 class Kill(Frame):
     def __init__(self,master,IP,port_no,function='KILL'):
         Frame.__init__(self, master)

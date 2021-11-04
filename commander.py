@@ -1,6 +1,5 @@
 from tkinter import *
 from tkinter import ttk
-import threading
 import enum
 class StateOut(enum.Enum):
     Nope = int(-1)

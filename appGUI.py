@@ -1,8 +1,6 @@
 from tkinter import *
 from tkinter import ttk
 import socket
-# pip install pillow
-from pyautogui import scroll
 from tkinter import messagebox
 mpApplication={}
 #os.system('taskkill /f /im brave.exe')
