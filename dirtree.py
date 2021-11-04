@@ -23,7 +23,7 @@ class FileTree():
         else:
             self.ui = Tk()
         self.ui.title('Files')
-        self.ui.geometry("640x360")
+        # self.ui.geometry("700x360")
         self.mainframe = ttk.Frame(self.ui, padding='3 3 12 12')
         self.mainframe.grid(column=0, row=0, sticky=(N,W,E,S))
         self.ui.columnconfigure(0, weight=1)
@@ -137,6 +137,13 @@ class FileTree():
                     self.fileTree.insert(serverPath, "end", fullPath, text="<" + type + "> " + item, values=(fullPath, type))
                 except TclError:
                     pass
+    def manipulateNameFromDirOrFile(self,s):
+        if '<file> ' in s:
+            return s[7:]
+        elif '<dir> ' in s:
+            return s[6:]
+        else:
+            return s
     def Copy(self):
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.conn.connect((self.ip, self.port))
@@ -184,14 +191,13 @@ class FileTree():
         self.conn.send("DIRSHW".encode())
         self.data = self.conn.recv(1024).decode()
 
-    
-
-
     def startInstance(self):
-        self.sendSignal()
-        self.bind2Tree()
-        self.ui.mainloop()
-        
+        try:
+            self.sendSignal()
+            self.bind2Tree()
+            self.ui.mainloop()
+        except:
+            pass
     @staticmethod
     def list_files(partition):
         ret = []
@@ -204,8 +210,8 @@ class FileTree():
                 ret.append('{}{}'.format(subindent, f))
         return ret
 
-ft = FileTree(None, '10.2.0.2', 1025)
+#ft = FileTree(None, '10.2.0.2', 1025)
 # filepath =  "E:\\list.txt"
 # with open(filepath, "w", encoding="utf8") as ofile:
 #     ft.list_files(ofile)
-ft.startInstance()
+#ft.startInstance()

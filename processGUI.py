@@ -8,7 +8,6 @@ from PIL import Image, ImageTk
 from pyautogui import scroll
 from tkinter import messagebox
 import re
-
 class Kill(Frame):
     def __init__(self,master,IP,port_no,function='KILL'):
         Frame.__init__(self, master)
@@ -33,7 +32,6 @@ class Kill(Frame):
 
     def load(self,name='Kill'):
         self.master.wm_title(name)
-        self.master.geometry('500x50')
         self.master.mainloop()
 
     def sendProcess(self):
@@ -45,7 +43,6 @@ class Kill(Frame):
             if data.decode() == 'TRUE':
                 global PID_Deleted
                 PID_Deleted=self.pid.get()
-                self.master.quit()
             else:
                 messagebox.showerror("Error","Failed to kill a process!")
         except:
@@ -60,9 +57,7 @@ class Start(Kill):
             self.conn.connect((self.IP, self.port_no))
             self.conn.send(("START " + self.pid.get()).encode())
             data = self.conn.recv(8)
-            if data.decode() == 'TRUE':
-                self.master.quit()
-            else:
+            if data.decode() != 'TRUE':
                 messagebox.showerror("Error","Failed to start a process!")
         except:
             messagebox.showerror("Error","Not Found!")
@@ -120,7 +115,6 @@ class Process(Frame):
     def loadProcess(self):
         try:
             self.master.wm_title("Process")
-            self.master.geometry('500x450')
             self.master.mainloop()
         except:
             pass
@@ -129,7 +123,10 @@ class Process(Frame):
     def eventKillProcess(self):
         ins=Kill(self.master,self.IP,self.port_no)
         ins.load()
-        self.deleteInTreeView(str(PID_Deleted))
+        try:
+            self.deleteInTreeView(str(PID_Deleted))
+        except:
+            pass
     #Delete in treeview
     def deleteInTreeView(self,PID):
         selected_items = self.treeViewProcess.get_children()

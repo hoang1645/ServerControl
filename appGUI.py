@@ -30,7 +30,6 @@ class Kill(Frame):
 
     def load(self,name='Kill'):
         self.master.wm_title(name)
-        self.master.geometry('500x50')
         self.master.mainloop()
 
     def sendProcess(self):
@@ -42,7 +41,6 @@ class Kill(Frame):
             if data.decode() == 'TRUE':
                 global PID_Deleted
                 PID_Deleted=self.pid.get()
-                self.master.quit()
             else:
                 messagebox.showerror("Error","Failed to kill an app!")
         except:
@@ -57,9 +55,7 @@ class Start(Kill):
             self.conn.connect((self.IP, self.port_no))
             self.conn.send(("START " + self.pid.get()).encode())
             data = self.conn.recv(8)
-            if data.decode() == 'TRUE':
-                self.master.quit()
-            else:
+            if data.decode() != 'TRUE':
                 messagebox.showerror("Error","Failed to start an app!")
         except:
             messagebox.showerror("Error","Not Found!")
@@ -108,14 +104,16 @@ class App(Frame):
     def loadApp(self):
         try:
             self.master.wm_title("App Manager")
-            self.master.geometry('510x400')
             self.master.mainloop()
         except:
             pass
     def eventKillApp(self):
         ins=Kill(self.master,self.IP,self.port_no)
         ins.load()
-        self.deleteInTreeView(str(PID_Deleted))
+        try:
+            self.deleteInTreeView(str(PID_Deleted))
+        except:
+            pass
     def eventDeleteAppProcess(self):
         selected_items = self.treeViewProcess.get_children()
         for child in selected_items:
@@ -131,10 +129,12 @@ class App(Frame):
             data = self.conn.recv(1024)
             if not data:
                 break
-            if data.decode().find('STOPRIGHTNOW')!=-1:
+            strRev+=data.decode()
+            if(strRev.find('STOPRIGHTNOW')!=-1):
                 break
-            strRev+=data.decode('utf8')
+        strRev=strRev.replace('STOPRIGHTNOW','')
         finalAppRunning = strRev.split()
+        print(finalAppRunning)
         for i in range(0,len(finalAppRunning)//3,1):
             self.treeViewProcess.insert("",'end',text=finalAppRunning[3*i],values=(finalAppRunning[3*i+1],finalAppRunning[3*i+2]))
     #Giu nguyen

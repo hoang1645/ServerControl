@@ -34,7 +34,6 @@ class KeyboardLock(Frame):
 
     def load(self):
         self.master.wm_title('Lock a keyboard')
-        self.master.geometry('500x50')
         self.master.mainloop()
 
     def submitLock(self):
@@ -86,7 +85,6 @@ class KeyloggerWindow(Frame):
     def loadKeyLog(self):
         try:
             self.master.wm_title("Keylog and lock keyboard")
-            self.master.geometry('600x600')
             self.master.mainloop()
         except:
             pass

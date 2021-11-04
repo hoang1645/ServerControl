@@ -1,15 +1,11 @@
 from tkinter import *
 from tkinter import ttk
-import threading
-import enum
-import subprocess
 
 # -1 is nope, 0 is logout, 1 is shutdown
 class MACAddressWindow:
     def __init__(self, root,macTuple):
         self.root = Toplevel(root)
         self.root.title('Show MAC Address')
-        self.root.geometry('650x300')
 
         self.mainframe = ttk.Frame(self.root, padding='3 3 12 12')
         self.mainframe.grid(column=0, row=0, sticky=(N,W,E,S))
@@ -29,5 +25,7 @@ class MACAddressWindow:
         for value in macTuple:
             self.tree.insert('', 'end', values=value)
     def NewInstance(self):
-        self.root.mainloop()
- 
+        try:
+            self.root.mainloop()
+        except:
+            pass
