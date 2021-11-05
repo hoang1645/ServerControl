@@ -160,8 +160,7 @@ class FileTree():
             while True:
                     d = self.conn.recv(1024)
                     data += d
-                    if len(d) < 1024:
-                        
+                    if len(d) < 1024:                    
                         break
             with open(dir + name, "wb") as ofile:
                 ofile.write(data)
