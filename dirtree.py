@@ -156,7 +156,7 @@ class FileTree():
         if a:
             self.conn.send(("GIVE " + serverPath).encode(encoding='utf8'))
             data = b""
-            sleep(1)
+            print(len(data))
             while True:
                     d = self.conn.recv(1024)
                     data += d
