@@ -19,6 +19,7 @@ class Server(object):
         """Creates the interface window"""
         self.root = Tk()
         self.root.title("Server")
+        self.root.iconbitmap("serverIcon.ico")
 
         #mainframe
         self.mainframe = ttk.Frame(self.root, padding="25 25 50 50")
@@ -115,13 +116,13 @@ class Server(object):
             self.conn.send('STOPRIGHTNOW'.encode())
             
         elif Str.decode() == 'SHWPRCAPP':
-            tmp = subprocess.check_output("powershell gps | where {$_.MainWindowTitle} | select Name,Id,@{Name='ThreadCount';Expression={$_.Threads.Count}}")
-            arr = tmp.decode('utf-8').split()[6:]
+            tmp = subprocess.check_output(['powershell', 'gps', '|', 'where', '{$_.MainWindowTitle}', '|', 'select', "Name,Id,@{Name='ThreadCount';Expression={$_.Threads.Count}}"],encoding='utf-8')
+            arr = tmp.split()[6:]
             newArr = []
             ind = 0
             while ind < len(arr):
                 baseStr = ""
-                while re.search('[a-zA-Z]', arr[ind]):
+                while re.search('.*[a-zA-Z]+.*', arr[ind]):
                     baseStr += arr[ind]
                     ind+=1
                 if len(baseStr) != 0:

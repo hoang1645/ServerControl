@@ -88,9 +88,9 @@ class App(Frame):
         s.configure('Treeview', rowheight=30)
         
         self.treeViewProcess["columns"]=("one","two")
-        self.treeViewProcess.column("#0",width=165,anchor=CENTER)
-        self.treeViewProcess.column("one",width=165,anchor=CENTER)
-        self.treeViewProcess.column("two",width=165,anchor=CENTER)
+        self.treeViewProcess.column("#0",width=165,anchor=CENTER,stretch=NO)
+        self.treeViewProcess.column("one",width=165,anchor=CENTER,stretch=NO)
+        self.treeViewProcess.column("two",width=165,anchor=CENTER,stretch=NO)
         self.treeViewProcess.heading("#0",text='Application Name')
         self.treeViewProcess.heading("one",text='Application ID')
         self.treeViewProcess.heading("two",text='Count Threads')
@@ -132,7 +132,6 @@ class App(Frame):
                 break
         strRev=strRev.replace('STOPRIGHTNOW','')
         finalAppRunning = strRev.split()
-        print(finalAppRunning)
         for i in range(0,len(finalAppRunning)//3,1):
             self.treeViewProcess.insert("",'end',text=finalAppRunning[3*i],values=(finalAppRunning[3*i+1],finalAppRunning[3*i+2]))
     #Giu nguyen

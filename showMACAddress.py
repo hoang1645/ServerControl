@@ -17,8 +17,8 @@ class MACAddressWindow:
         columns = ('Field','Value')
         self.tree = ttk.Treeview(self.mainframe, columns=columns, show='headings',height=12)
         self.tree.grid(column=0, row=0, sticky=(N,W),padx=16,pady=16)
-        self.tree.column('Field', width=300, anchor='center')
-        self.tree.column('Value', width=300, anchor='center')
+        self.tree.column('Field', width=300, anchor='center',stretch=NO)
+        self.tree.column('Value', width=300, anchor='center',stretch=NO)
         
         self.tree.heading('Field', text='Field')
         self.tree.heading('Value', text='Value')
