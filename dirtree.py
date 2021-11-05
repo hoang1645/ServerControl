@@ -146,7 +146,7 @@ class FileTree():
         self.conn.connect((self.ip, self.port))
 
         self.item = self.fileTree.focus()
-        dir = filedialog.askdirectory(); dir = dir[:-1] + "\\"; print(dir)
+        dir = filedialog.askdirectory()
         name = self.fileTree.item(self.item, 'text').replace("<file> ", "")
         serverPath = self.fileTree.item(self.item, 'values')[0]
         a = True
@@ -162,7 +162,7 @@ class FileTree():
                     data += d
                     if len(d) < 1024:                    
                         break
-            with open(dir + name, "wb") as ofile:
+            with open(os.path.join(dir, name), "wb") as ofile:
                 ofile.write(data)
             
     def Delete(self):
