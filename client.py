@@ -35,6 +35,7 @@ class Client(object):
         """Creates the interface window"""
         self.root = Tk()
         self.root.title("Client version")
+        self.root.iconbitmap("toolIcon.ico")
 
         self.root.tk.call("source","sun-valley.tcl")
         self.root.tk.call("set_theme","light")
@@ -74,6 +75,12 @@ class Client(object):
         self.confButton = ttk.Button(self.mainframe, text='Go', command=self.act, state=DISABLED)
         self.confButton.grid(column=3, row=4, sticky=(E,S))
 
+        self.themeLabel = ttk.Label(self.mainframe, text='Change theme: Light Mode or Dark Mode')
+        self.themeLabel.grid(column=1, row=5, sticky=(W,E))
+
+        self.themeToggle = ttk.Checkbutton(self.mainframe, command=self.changeTheme,style="Switch.TCheckbutton")
+        self.themeToggle.grid(column=2, row=5, sticky=(E,S))
+
         subframe = ttk.Frame(self.root, padding='3 3 12 12')
         subframe.grid(row=1, column=0)
 
@@ -89,6 +96,13 @@ class Client(object):
         
         for i in range(5):
             self.mainframe.rowconfigure(i, weight=1)
+
+    def changeTheme(self):
+        if self.root.tk.call("ttk::style", "theme", "use") == "sun-valley-dark":
+            self.root.tk.call("set_theme", "light")
+        else:
+            self.root.tk.call("set_theme", "dark")
+
     #Connect to the server
     def Connect(self):
         try:

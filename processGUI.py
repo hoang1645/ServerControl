@@ -61,7 +61,7 @@ class Process(Frame):
     def __init__(self,master, IP, port_no):
         Frame.__init__(self, master)
         self.master = Toplevel(master)
-        self.master.resizable(0,0)
+        self.master.resizable(FALSE,FALSE)
         
         self.master.columnconfigure(0, weight=1)
         self.master.columnconfigure(1, weight=1)
@@ -93,9 +93,9 @@ class Process(Frame):
         s.configure('Treeview', rowheight=30)
         
         self.treeViewProcess["columns"]=("one","two")
-        self.treeViewProcess.column("#0",width=160,anchor=CENTER)
-        self.treeViewProcess.column("one",width=160,anchor=CENTER)
-        self.treeViewProcess.column("two",width=160,anchor=CENTER)
+        self.treeViewProcess.column("#0",width=160,anchor=CENTER,stretch=NO)
+        self.treeViewProcess.column("one",width=160,anchor=CENTER,stretch=NO)
+        self.treeViewProcess.column("two",width=160,anchor=CENTER,stretch=NO)
         self.treeViewProcess.heading("#0",text='Name Process')
         self.treeViewProcess.heading("one",text='ID Process')
         self.treeViewProcess.heading("two",text='Count Threads')
