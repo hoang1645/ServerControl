@@ -150,7 +150,7 @@ class FileTree():
         name = self.fileTree.item(self.item, 'text').replace("<file> ", "")
         serverPath = self.fileTree.item(self.item, 'values')[0]
         a = True
-        if os.path.isfile(dir+name):
+        if os.path.isfile(os.path.join(dir, name)):
             a = messagebox.askyesno(message="Item already exists. Overwrite?",\
             icon='question', title="Copy")
         if a:
