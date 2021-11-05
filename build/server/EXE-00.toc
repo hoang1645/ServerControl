@@ -1,5 +1,5 @@
 ('E:\\socket_endterm\\build\\server\\server.exe',
- False,
+ True,
  False,
  True,
  'serverIcon.ico',
@@ -46,7 +46,7 @@
  [],
  False,
  False,
- 1636089060,
- [('runw.exe',
-   'C:\\Users\\ASUS\\AppData\\Roaming\\Python\\Python39\\site-packages\\PyInstaller\\bootloader\\Windows-64bit\\runw.exe',
+ 1636100839,
+ [('run.exe',
+   'C:\\Users\\ASUS\\AppData\\Roaming\\Python\\Python39\\site-packages\\PyInstaller\\bootloader\\Windows-64bit\\run.exe',
    'EXECUTABLE')])
